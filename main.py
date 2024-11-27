@@ -2,12 +2,12 @@
 import os
 import random
 import pygame
+from scene import Scene1
 
 # CONSTANTS
 WIDTH = 1280
 HEIGHT = 720
 TITLE = "FBLA 2025"
-BG_COLOR = pygame.Color(255, 0, 0)
 
 # SPRITE CLASS
 class Sprite(pygame.sprite.Sprite):
@@ -24,11 +24,8 @@ class Sprite(pygame.sprite.Sprite):
                 screen.blit(self.image, (self.rect.x, self.rect.y))
 
         def move(self, x, y, vx, vy):
-                # if self.rect.x > x-(x%vx):
-                #         vx *= -1
-                # if self.rect.y > y-(y%vy):
-                #         vy *= -1
-                self.rect.move(vx, vy)
+                self.rect.x += vx
+                self.rect.y += vy
 
         def update(self):
                 pass
@@ -63,26 +60,28 @@ test_textures = [
 test_sprite = Sprite(test_textures, 100, 100)
 
 #GAME LOOP
+# scenes
+active_scene = Scene1()
+
 while running:
+        # getting pressed keys and all events
+        keys = pygame.key.get_pressed()
+        events = []
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                         running = False
+                events.append(event)
 
-        screen.fill(BG_COLOR)
+        # Updating current scene with events, pressed keys, and scenes
+        active_scene.Update(events, keys, screen)
+
+        # Updating current scene; if no scene switch, then active_scene.next should be equal to active scene
+        active_scene = active_scene.next
 
         dest_x = random.randint(0, WIDTH)
         dest_y = random.randint(0, HEIGHT)
-        
-        if test_sprite.rect.x == dest_x and test_sprite.rect.y == dest_y:
-                dest_x = random.randint(0, WIDTH)
-                dest_y = random.randint(0, HEIGHT)
-                print("New Destination")
-
-        test_sprite.move(dest_x, dest_y, 1, 1)
-        test_sprite.show()
 
         pygame.display.flip()
-
         clock.tick(60)
         tick += 1
 
