@@ -9,3 +9,7 @@ class Window:
         pygame.display.set_caption(self.title)
         self.clock = pygame.time.Clock()
         self.animation_tick = 0
+
+    def tick(self, framerate):
+        self.clock.tick(framerate)
+        self.animation_tick += 1

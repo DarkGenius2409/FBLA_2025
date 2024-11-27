@@ -38,7 +38,6 @@ while running:
         dest_y = random.randint(0, HEIGHT)
 
         pygame.display.flip()
-        window.clock.tick(60)
-        window.animation_tick += 1
+        window.tick(60)
 
 pygame.quit()
