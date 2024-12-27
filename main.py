@@ -15,10 +15,10 @@ story_result = None
 
 # Creating the story with AI
 def fetch_story(prompt):
-    global story_result, loading
+    global story_result
     story_result = createStory(prompt)
 
-story_thread = threading.Thread(target=fetch_story, args=("Trump yells at Joe",))
+story_thread = threading.Thread(target=fetch_story, args=("FBI agent interrogates the prisoner",))
 story_thread.start()
 
 active_scene = LoadingScene(window)

@@ -1,14 +1,15 @@
-
 from langchain_ollama import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field, model_validator
 from langchain_core.output_parsers import JsonOutputParser
 import time
 
+# Global Variables
 model = OllamaLLM(model="llama3.1")
 actionTypes = ["speak", "leave", "move"]
-characters = ["Donald Trump", "Joe Biden"]
+characters = ["fbi-agent", "prisoner"]
 
+# Datatype Models
 class Action(BaseModel):
     character: str = Field(description="Name of character doing the action")
     actionType: str = Field(description="Type of action")
@@ -33,7 +34,7 @@ class Action(BaseModel):
 class Scene(BaseModel):
     actions: list[Action] = Field(description="List of actions for the story in order")
 
-# Retry Logic Function
+# Getting matching data within 5 attempts
 def getDataInFormat(chain, input_data, max_attempts=5, delay=2):
     attempt = 0
     while attempt < max_attempts:
@@ -52,9 +53,11 @@ def getDataInFormat(chain, input_data, max_attempts=5, delay=2):
                 print("Max attempts reached. Unable to get a successful response.")
                 raise
 
+# Creating story based on topic
 def createStory(topic):
     parser = JsonOutputParser(model=Scene)
 
+    # Prompt engineering
     prompt = ChatPromptTemplate.from_messages([
         ("system",
          """
