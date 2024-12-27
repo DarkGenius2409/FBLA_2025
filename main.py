@@ -1,43 +1,48 @@
-# IMPORTS
-import os
-import random
+import threading
 import pygame
-from scene import Scene1
-from window import Window
-
-# CONSTANTS
-WIDTH = 1280
-HEIGHT = 720
-TITLE = "FBLA 2025"
+from engine.ai import createStory
+from engine.window import Window
+from scenes.LoadingScene import LoadingScene
 
 # PYGAME SETUP
 pygame.init()
-window = Window(WIDTH, HEIGHT, TITLE)
+pygame.font.init()
+
+# Game Global Variables
+window = Window()
 running = True
+story_result = None
+
+# Creating the story with AI
+def fetch_story(prompt):
+    global story_result, loading
+    story_result = createStory(prompt)
+
+story_thread = threading.Thread(target=fetch_story, args=("Trump yells at Joe",))
+story_thread.start()
+
+active_scene = LoadingScene(window)
 
 # GAME LOOP
-# scenes
-active_scene = Scene1(window)
-
 while running:
-        # getting pressed keys and all events
-        keys = pygame.key.get_pressed()
-        events = []
-        for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                        running = False
-                events.append(event)
+    # Getting pressed keys and all events
+    keys = pygame.key.get_pressed()
+    events = []
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        events.append(event)
 
-        # Updating current scene with events, pressed keys, and scenes
+    # Update current scene
+    if isinstance(active_scene, LoadingScene):
+        active_scene.UpdateLoading(story_result, events, keys)
+    else:
         active_scene.Update(events, keys)
 
-        # Updating current scene; if no scene switch, then active_scene.next should be equal to active scene
-        active_scene = active_scene.next
+    # Update current scene; if no scene switch, then active_scene.next should be equal to active_scene
+    active_scene = active_scene.next
 
-        dest_x = random.randint(0, WIDTH)
-        dest_y = random.randint(0, HEIGHT)
-
-        pygame.display.flip()
-        window.tick(60)
+    pygame.display.flip()
+    window.tick(60)
 
 pygame.quit()

@@ -1,7 +1,12 @@
 import pygame
 
+# CONSTANTS
+WIDTH = 1280
+HEIGHT = 720
+TITLE = "FBLA 2025"
+
 class Window:
-    def __init__(self, width, height, title):
+    def __init__(self, width=WIDTH, height=HEIGHT, title=TITLE):
         self.width = width
         self.height = height
         self.title = title
