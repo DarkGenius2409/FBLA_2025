@@ -40,10 +40,10 @@ while running:
     else:
         active_scene.Update(events, keys)
 
-    # Update current scene; if no scene switch, then active_scene.next should be equal to active_scene
     active_scene = active_scene.next
 
     pygame.display.flip()
     window.tick(60)
 
 pygame.quit()
+
