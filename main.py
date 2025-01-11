@@ -3,6 +3,7 @@ import pygame
 from engine.ai import createStory
 from engine.window import Window
 from scenes.LoadingScene import LoadingScene
+from scenes.MenuScene import MenuScene
 
 # PYGAME SETUP
 pygame.init()
@@ -21,7 +22,7 @@ def fetch_story(prompt):
 story_thread = threading.Thread(target=fetch_story, args=("FBI agent interrogates the prisoner",))
 story_thread.start()
 
-active_scene = LoadingScene(window)
+active_scene = MenuScene(window, False)
 
 # GAME LOOP
 while running:

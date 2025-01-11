@@ -14,9 +14,10 @@ class Character(Sprite):
 
 
 class StoryScene(SceneBase):
-    def __init__(self, window, story):
+    def __init__(self, window, story, signed_in):
         super().__init__(window)
         self.story = story
+        self.signed_in = signed_in
 
         self.fbiAgent = Character("fbi-agent", self.window)
         self.prisoner = Character("prisoner", self.window)
