@@ -3,10 +3,11 @@ from engine.scene import SceneBase
 from scenes.StoryScene import StoryScene
 
 class LoadingScene(SceneBase):
-    def __init__(self, window):
+    def __init__(self, window, signed_in):
         super().__init__(window)
         self.font = pygame.font.SysFont('arial', 30)
         self.text = self.font.render('Loading....', True, (255, 255, 255))
+        self.signed_in = signed_in
 
 
     def UpdateLoading(self, story_result, events, keys):
@@ -18,4 +19,4 @@ class LoadingScene(SceneBase):
 
         # Check if story_result is available and switch to the StoryScene
         if story_result is not None:
-            self.Switch(StoryScene(self.window, story_result))
+            self.Switch(StoryScene(self.window, story_result, self.signed_in))
