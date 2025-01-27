@@ -1,6 +1,6 @@
 import threading
 import pygame
-from engine.ai import createStory
+from engine.ai import createStory, createTopics
 from engine.window import Window
 from scenes.LoadingScene import LoadingScene
 from scenes.MenuScene import MenuScene
@@ -14,15 +14,9 @@ window = Window()
 running = True
 story_result = None
 
-# Creating the story with AI
-def fetch_story(prompt):
-    global story_result
-    story_result = createStory(prompt)
 
-story_thread = threading.Thread(target=fetch_story, args=("FBI agent interrogates the prisoner",))
-story_thread.start()
 
-active_scene = MenuScene(window, False)
+active_scene = MenuScene(window)
 
 # GAME LOOP
 while running:
