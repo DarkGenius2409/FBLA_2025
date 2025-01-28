@@ -3,11 +3,11 @@ from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field, model_validator
 from langchain_core.output_parsers import JsonOutputParser
 import time
+from engine.sprite import characters
 
 # Global Variables
 model = OllamaLLM(model="llama3.1")
 actionTypes = ["speak", "leave", "move"]
-characters = ["fbi-agent", "prisoner"]
 
 class Action(BaseModel):
     character: str = Field(description="Name of character doing the action")
@@ -23,7 +23,7 @@ class Action(BaseModel):
             raise ValueError("'target' must contain dialogue for 'speak' action")
         if self.actionType == "move" and  self.target == "":
             raise ValueError("'target' must specify the target character for 'move' action")
-        if self.actionType == "move" and self.target not in characters:
+        if self.actionType == "move" and self.target not in characters.keys():
             raise ValueError("'target' must be a valid character for 'move' action")
         if self.actionType == "leave" and self.target:
             raise ValueError("'target' must be empty for 'leave' action")
@@ -163,7 +163,7 @@ def createStory(topic, endStory=False):
         ],
         "question":["next possibility 1", "next possibility 2", "next possibility 3", "next possibility 4"],
         "summary":"quick one sentence summary of everything that happened",
-        "end":{end}
+        "end":"{end}"
     }}
 
     Ensure the following:

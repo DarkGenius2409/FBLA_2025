@@ -1,6 +1,6 @@
-import threading
 import pygame
-from engine.ai import createStory, createTopics
+
+from engine.sprite import loadCharacters
 from engine.window import Window
 from scenes.LoadingScene import LoadingScene
 from scenes.MenuScene import MenuScene
@@ -14,9 +14,9 @@ window = Window()
 running = True
 story_result = None
 
-
-
+loadCharacters(window)
 active_scene = MenuScene(window)
+
 
 # GAME LOOP
 while running:
@@ -36,7 +36,6 @@ while running:
 
     # Update current scene; if no scene switch, then active_scene.next should be equal to active_scene
     active_scene = active_scene.next
-
     pygame.display.flip()
     window.tick(60)
 

@@ -1,27 +1,10 @@
 import threading
-
 import pygame
 import random
 from engine.ai import createStory
 from engine.button import Button
 from engine.scene import SceneBase
-from engine.sprite import Sprite
-
-characters = {
-    "fbi-agent": {
-        "sprite": "assets/fbi.png",
-    },
-    "prisoner": {
-        "sprite": "assets/prisoner.png",
-    }
-}
-
-
-class Character(Sprite):
-    def __init__(self, characterName, window):
-        self.characterName = characterName
-        texture = pygame.image.load(characters[self.characterName]["sprite"])
-        super().__init__(texture, False, 250, 250, window)
+from engine.sprite import characters
 
 
 class StoryScene(SceneBase):
@@ -36,7 +19,7 @@ class StoryScene(SceneBase):
         # Create character instances dynamically
         self.characters = {}
         for char_name in characters.keys():
-            self.characters[char_name] = Character(char_name, self.window)
+            self.characters[char_name] = characters[char_name]
 
         self.end = False
         self.currentScene = 0
@@ -52,7 +35,6 @@ class StoryScene(SceneBase):
         self.story = createStory(self.topic, self.endStory)
         self.setupActiveScene()
 
-
     def getCurrentAction(self):
         return self.story["scenes"][self.currentScene]["actions"][self.actionIndex]
 
@@ -60,13 +42,13 @@ class StoryScene(SceneBase):
         if self.currentScene > len(self.story["scenes"]) - 1:
             self.end = True
 
-            if not self.story["end"]:
-                end = False
-                if StoryScene.totalScenes > 2:
-                    end = random.choice([True, False])
-                StoryScene.totalSummary.append(self.story["summary"] )
-                self.Switch(ChoiceScene(self.window, "\nAfter,".join(StoryScene.totalSummary) , self.story["question"], end ))
-                StoryScene.totalScenes+=1
+            end = False
+            if StoryScene.totalScenes > 2:
+                end = random.choice([True, False])
+
+            StoryScene.totalSummary.append(self.story["summary"])
+            self.Switch(ChoiceScene(self.window, "\nAfter,".join(StoryScene.totalSummary), self.story["question"], end))
+            StoryScene.totalScenes += 1
 
             return None
         return self.story["scenes"][self.currentScene]
@@ -98,6 +80,7 @@ class StoryScene(SceneBase):
             character.move_to(x, y)
 
     def nextAction(self):
+        print("Next Action")
         self.actionIndex += 1
 
         if self.actionIndex > len(self.getCurrentScene()["actions"]) - 1:
@@ -132,36 +115,40 @@ class StoryScene(SceneBase):
             self.window.screen.blit(text_surface, text_surface_rect)
 
             action = self.getCurrentAction()
+
+            for c in self.characters.values():
+                c.switch_animation("idle")
+
             character = self.characters[action["character"]]
 
             if action["actionType"] == "speak":
+                character.switch_animation("idle")
+
                 if not character.isSpeaking:
                     character.speak(action["target"], 5, self.nextAction)
             elif action["actionType"] == "move":
                 target_char = self.characters[action["target"]]
+                character.switch_animation("walk")
 
                 dx = target_char.rect.x - character.rect.x
-                dy = target_char.rect.y - character.rect.y
-
-                if abs(dx) > 500 or abs(dy) > 10:
+                if abs(dx) > 500:
                     dx = 1 if dx > 0 else (-1 if dx < 0 else 0)
-
-                    dy = 1 if dy > 0 else (-1 if dy < 0 else 0)
-
-                    character.move(dx*5, dy*5)
+                    character.move(dx*5, 0)
                 else:
-                    character.stopMoving()
+                    character.switch_animation("idle")
                     self.nextAction()
+
             elif action["actionType"] == "leave":
                 character.setDirection(1)
                 character.move(5, 0)
+                character.switch_animation("walk")
 
                 if character.rect.x > self.window.width+100:
                     self.nextAction()
 
-            # Show all characters
+
             for character in self.characters.values():
-                character.show()
+                character.update()
 
 
 
