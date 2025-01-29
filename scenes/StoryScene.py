@@ -1,7 +1,7 @@
 import threading
 import pygame
 import random
-from engine.ai import createStory
+from engine.ai.generate import createStory
 from engine.button import Button
 from engine.scene import SceneBase
 from engine.sprite import characters
@@ -133,7 +133,7 @@ class StoryScene(SceneBase):
                 dx = target_char.rect.x - character.rect.x
                 if abs(dx) > 500:
                     dx = 1 if dx > 0 else (-1 if dx < 0 else 0)
-                    character.move(dx*5, 0)
+                    character.move(dx, 0)
                 else:
                     character.switch_animation("idle")
                     self.nextAction()

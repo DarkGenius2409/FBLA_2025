@@ -1,6 +1,6 @@
 import threading
 import pygame
-from engine.ai import createTopics
+from engine.ai.generate import createTopics
 from engine.button import Button
 from engine.scene import SceneBase
 from scenes.StoryScene import StoryScene
