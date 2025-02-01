@@ -3,6 +3,7 @@ import pygame
 import random
 from engine.ai.generate import createStory
 from engine.button import Button
+from engine.constants import BG_COLOR, TEXT_COLOR
 from engine.scene import SceneBase
 from engine.sprite import characters
 
@@ -94,7 +95,7 @@ class StoryScene(SceneBase):
         self.window.screen.blit(text_object, text_rect)
 
     def Update(self, events, keys):
-        self.window.screen.fill((0, 0, 0))
+        self.window.screen.fill((BG_COLOR))
 
         if self.story is None:
             self.show_text(self.arial, "Loading...", (self.window.width // 2, (self.window.height // 2) ), (255, 255, 255))
@@ -103,13 +104,13 @@ class StoryScene(SceneBase):
         font = pygame.font.SysFont("Arial", 20)
 
         if self.end:
-            text_surface = font.render("THE END", True, (255, 255, 255))
+            text_surface = font.render("THE END", True, (TEXT_COLOR))
             text_rect = pygame.Rect(0, 0, self.window.width, self.window.height)
             text_surface_rect = text_surface.get_rect(center=text_rect.center)
             self.window.screen.blit(text_surface, text_surface_rect)
         else:
             backdrop = self.getCurrentScene()["backdrop"]
-            text_surface = font.render(f"Scene {self.currentScene+1} - {backdrop}", True, (255, 255, 255))
+            text_surface = font.render(f"Scene {self.currentScene+1} - {backdrop}", True, (TEXT_COLOR))
             text_rect = pygame.Rect(0, 0, self.window.width, 40)
             text_surface_rect = text_surface.get_rect(center=text_rect.center)
             self.window.screen.blit(text_surface, text_surface_rect)
@@ -190,7 +191,7 @@ class ChoiceScene(SceneBase):
         self.window.screen.fill((0, 0, 0))
 
         # Display the title
-        self.show_text(self.title_font, "What should happen next?", (self.width // 2, (self.height // 2) - 200), (255, 255, 255))
+        self.show_text(self.title_font, "What should happen next?", (self.width // 2, (self.height // 2) - 200), (TEXT_COLOR))
 
         for obj in self.buttons:
             obj["button"].show()
