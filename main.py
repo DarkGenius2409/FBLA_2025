@@ -15,8 +15,8 @@ running = True
 story_result = None
 
 loadCharacters(window)
-active_scene = MenuScene(window)
-archer = characters["archer"]
+active_scene = MenuScene(window, None)
+# archer = characters["archer"]
 
 # GAME LOOP
 while running:
@@ -35,7 +35,11 @@ while running:
         active_scene.Update(events, keys)
 
     # Update current scene; if no scene switch, then active_scene.next should be equal to active_scene
-    active_scene = active_scene.next
+    if active_scene.next is not None:
+        next_scene = active_scene.next
+        active_scene.next = None
+        active_scene = next_scene
+
     pygame.display.flip()
     window.tick(60)
 

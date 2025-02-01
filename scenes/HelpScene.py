@@ -29,7 +29,6 @@ class HelpScene(SceneBase):
 
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
-
                 self.back_btn.on_click(self.SwitchBack, mouse)
 
         self.back_btn.show()

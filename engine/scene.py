@@ -5,7 +5,7 @@ import pygame
 class SceneBase:
     def __init__(self, window, prev=None):
         # next scene to show; until scene switch is needed, the next scene is the same as the current
-        self.next = self
+        self.next = None
         self.window = window
         self.prev = prev
 
@@ -15,6 +15,7 @@ class SceneBase:
 
     # Switches to next scene
     def Switch(self, next_scene):
+        self.prev = self
         self.next = next_scene
 
     def SwitchBack(self):

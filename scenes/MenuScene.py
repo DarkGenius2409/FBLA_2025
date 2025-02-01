@@ -9,8 +9,8 @@ from scenes.TopicScene import TopicScene
 
 
 class MenuScene(SceneBase):
-    def __init__(self, window):
-        super().__init__(window)
+    def __init__(self, window, prev):
+        super().__init__(window, prev)
         self.title_font = pygame.font.SysFont('arial', 90)
         self.width = self.window.width
         self.height = self.window.height
@@ -31,7 +31,6 @@ class MenuScene(SceneBase):
     def Update(self, events, keys):
         mouse = pygame.mouse.get_pos()
 
-        # Clear the screen with black background
         self.window.screen.fill((BG_COLOR))
 
         self.show_text(self.title_font,"Welcome", (self.width // 2, (self.height // 2) - 100 ), (TEXT_COLOR))
@@ -40,9 +39,8 @@ class MenuScene(SceneBase):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 def switch_topic():
                     self.Switch(TopicScene(self.window))
-
                 def switch_sign_in():
-                        self.Switch(SignInScene(self.window, self))
+                    self.Switch(SignInScene(self.window, self))
                 def switch_help():
                     self.Switch(HelpScene(self.window, self))
 
