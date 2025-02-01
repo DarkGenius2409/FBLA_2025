@@ -33,7 +33,7 @@ class MenuScene(SceneBase):
 
         self.window.screen.fill(BG_COLOR)
 
-        self.show_text(self.title_font,"Welcome", (self.width // 2, (self.height // 2) - 100 ), TEXT_COLOR)
+        self.show_text(self.title_font,"Welcome", (self.width // 2, (self.height // 2) - 100), TEXT_COLOR)
 
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
