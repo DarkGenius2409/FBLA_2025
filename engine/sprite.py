@@ -3,17 +3,15 @@ import pygame
 characters = {}
 
 
+
 class Sprite:
-    def __init__(self, spritesheets, frame_width, frame_height, window):
+    def __init__(self, spritesheets, scale, window):
         self.speak_complete_callback = None
         self.animations = {}
-        self.current_animation = None
+        self.current_animation = list(spritesheets.keys())[0]
         self.current_frame = 0
         self.last_frame_time = pygame.time.get_ticks()
         self.window = window
-        self.rect = pygame.Rect(
-            0, 0, frame_width , frame_height
-        )
         self.isSpeaking = False
         self.speech_end_time = 0
         self.speech_text = None
@@ -21,33 +19,27 @@ class Sprite:
         self.speech_color = (255, 255, 255)
         self.speech_bg_color = (0, 0, 0)
         self.visible = True
-        self.direction = 1  # 1 for normal, -1 for flipped
-        self.up = 5
+        self.direction = 1
+        self.rect = None
+        self.scale = scale
 
         for name in spritesheets.keys():
-            self.load_animation(spritesheets[name]["file"], frame_width, frame_height, name, spritesheets[name]["speed"])
+            sheet = spritesheets[name]
+            self.load_animation(sheet["file"], sheet["frames"], name, sheet["speed"])
 
-        if self.animations:
-            self.switch_animation(
-                next(iter(self.animations))
-            )  # Default to the first animation
 
-    def setVisible(self, visible):
-        self.visible = visible
-
-    def load_animation(self, spritesheet_path, frame_width, frame_height, name, speed):
-        spritesheet = pygame.image.load(spritesheet_path).convert_alpha()
+    def load_animation(self, path, frames, name, speed):
         animation = []
-        for y in range(0, spritesheet.get_height(), frame_height):
-            for x in range(0, spritesheet.get_width(), frame_width):
-                frame = spritesheet.subsurface(
-                    pygame.Rect(x, y, frame_width, frame_height)
-                )
-                scaled_frame = pygame.transform.scale(
-                    frame, (frame_width * 5, frame_height * 5)
-                )
-                animation.append(scaled_frame)
-        self.animations[name] = {"animation":animation, "speed":speed}
+        for x in range(frames):
+            frame = pygame.image.load(path + f"/{x}.png")
+            frame = pygame.transform.scale(frame, (self.scale*frame.get_width(),self.scale*frame.get_height()))
+
+            if self.rect is None:
+                self.rect = pygame.rect.Rect(0, 0, frame.get_width(), frame.get_height())
+
+            animation.append(frame)
+
+        self.animations[name] = {"animation": animation, "speed": speed}
 
     def switch_animation(self, animation_name):
         if (animation_name in self.animations) and not (
@@ -56,7 +48,80 @@ class Sprite:
             self.current_animation = animation_name
             self.current_frame = 0
 
+    def wrap_text(self, text, font, max_width):
+        words = text.split()
+        lines = []
+        current_line = ""
+
+        for word in words:
+            test_line = current_line + word + " "
+            if font.size(test_line)[0] <= max_width:
+                current_line = test_line
+            else:
+                lines.append(current_line.strip())
+                current_line = word + " "
+
+        if current_line:
+            lines.append(current_line.strip())
+
+        return lines
+
+    import pygame
+
+    def draw_speech_bubble(self):
+        font = pygame.font.SysFont("Arial", 20)
+        padding = (20, 20)
+
+        # Render text lines
+        lines = self.wrap_text(self.speech_text, font, 200)
+        line_surfaces = [font.render(line, True, (0, 0, 0)) for line in lines]
+
+        # Calculate speech bubble dimensions
+        text_width = max(surface.get_width() for surface in line_surfaces)
+        text_height = sum(surface.get_height() for surface in line_surfaces)
+        bubble_width = text_width + padding[0] * 2
+        bubble_height = text_height + padding[1] * 2
+
+        if self.direction < 0:
+            bubble_x = self.rect.topleft[0]
+        else:
+            bubble_x = self.rect.topright[0]
+        bubble_y = self.rect.top - bubble_height - 10
+
+        # Ensure bubble is within screen bounds
+        bubble_x = max(10, min(bubble_x, self.window.width - bubble_width - 10))
+        bubble_y = max(10, bubble_y)
+
+        # Colors
+        bubble_color = (255, 255, 255)
+        border_color = (0, 0, 0)
+
+        # Draw speech bubble rectangle
+        pygame.draw.rect(self.window.screen, bubble_color, (bubble_x, bubble_y, bubble_width, bubble_height),
+                         border_radius=10)
+        pygame.draw.rect(self.window.screen, border_color, (bubble_x, bubble_y, bubble_width, bubble_height), 2,
+                         border_radius=10)
+
+        tail_points = [
+            (bubble_x + bubble_width // 2 - 10, bubble_y + bubble_height),  # Bottom middle
+            (bubble_x + bubble_width // 2 + 10, bubble_y + bubble_height),  # Bottom middle-right
+            (bubble_x + bubble_width // 2, bubble_y + bubble_height + 15)  # Bottom tip
+        ]
+        pygame.draw.polygon(self.window.screen, bubble_color, tail_points)
+        pygame.draw.polygon(self.window.screen, border_color, tail_points, 2)
+
+        # Draw text inside the bubble
+        for i, surface in enumerate(line_surfaces):
+            text_x = bubble_x + padding[0]
+            text_y = bubble_y + padding[1] + (i * surface.get_height())
+            self.window.screen.blit(surface, (text_x, text_y))
+
     def update(self):
+        self.show()
+        if self.isSpeaking:
+            self.update_speech()
+
+    def show(self):
         current_time = pygame.time.get_ticks()
         if current_time - self.last_frame_time >= self.animations[self.current_animation]["speed"]:
             self.last_frame_time = current_time
@@ -64,37 +129,6 @@ class Sprite:
                 self.animations[self.current_animation]["animation"]
             )
 
-            print(self.current_frame)
-
-        self.show()
-
-        if self.isSpeaking:
-            self.update_speech()
-
-    def wrap_text(self, text, font, max_width):
-        words = text.split(" ")
-        lines = []
-        current_line = []
-        current_width = 0
-
-        for word in words:
-            word_surface = font.render(word + " ", True, (0, 0, 0))
-            word_width = word_surface.get_width()
-
-            if current_width + word_width <= max_width:
-                current_line.append(word)
-                current_width += word_width
-            else:
-                lines.append(" ".join(current_line))
-                current_line = [word]
-                current_width = word_width
-
-        if current_line:
-            lines.append(" ".join(current_line))
-
-        return lines
-
-    def show(self):
         if not self.visible:
             return
 
@@ -102,45 +136,18 @@ class Sprite:
             frame = self.animations[self.current_animation]["animation"][self.current_frame]
             if self.direction == -1:
                 frame = pygame.transform.flip(frame, True, False)
-            self.window.screen.blit(frame, self.rect.topleft)
+            self.window.screen.blit(frame, self.rect)
 
-        if self.isSpeaking:
-            font = pygame.font.SysFont("Arial", 20)
-
-            lines = self.wrap_text(self.speech_text, font, 200)
-            line_height = font.get_linesize()
-            total_height = line_height * len(lines)
-
-            line_surfaces = [font.render(line, True, (0, 0, 0)) for line in lines]
-            max_line_width = max(surface.get_width() for surface in line_surfaces)
-
-            padding = 10
-            bubble_width = max_line_width + padding * 2
-            bubble_height = total_height + padding * 2
-
-            if self.direction == 1:
-                bubble_x = self.rect.right + 5
-            else:
-                bubble_x = self.rect.left - bubble_width - 5
-
-            bubble_y = self.rect.top + 5
-            bubble_rect = pygame.Rect(bubble_x, bubble_y, bubble_width, bubble_height)
-            pygame.draw.rect(self.window.screen, (255, 255, 255), bubble_rect)
-            pygame.draw.rect(self.window.screen, (0, 0, 0), bubble_rect, 1)
-
-            for i, surface in enumerate(line_surfaces):
-                text_y = bubble_y + padding + (i * line_height)
-                text_x = bubble_x + padding
-                self.window.screen.blit(surface, (text_x, text_y))
+        if self.isSpeaking and self.speech_text:
+           self.draw_speech_bubble()
         else:
             self.isSpeaking = False
-            if self.speak_complete_callback is not None:
+            if self.speak_complete_callback:
                 self.speak_complete_callback()
 
     def move(self, vx, vy):
         self.rect.x += vx
-        self.rect.y += 1 * self.up
-        self.up = -self.up
+        self.rect.y += vy
 
     def move_to(self, x, y):
         self.rect.topleft = (x, y)
@@ -178,35 +185,22 @@ class Sprite:
                 pygame.transform.scale(frame, (w, h)) for frame in frames
             ]
 
-    def rot(self, angle):
-        for animation_name, frames in self.animations.items():
-            self.animations[animation_name] = [
-                pygame.transform.rotate(frame, angle) for frame in frames
-            ]
-
 
 def loadCharacters(window):
-    archer = Sprite(
+    characters["archer"]  = Sprite(
         {
-            "idle": {"file":"assets/archer/archer-idle.png", "speed":100},
-            "walk": {"file":"assets/archer/archer-walk.png", "speed":150}
+            "idle": {"file":"assets/archer/idle", "speed":150, "frames":5},
+            "walk": {"file":"assets/archer/walk", "speed":100, "frames":7},
         },
-        100,
-        100,
+        7,
         window,
     )
-    archer.switch_animation("idle")
 
-    soldier = Sprite(
+    characters["soldier"] = Sprite(
         {
-            "idle": {"file":"assets/soldier/soldier-idle.png", "speed":100},
-            "walk": {"file":"assets/soldier/soldier-walk.png", "speed":150}
+            "idle": {"file":"assets/soldier/idle", "speed":100, "frames":5},
+            "walk": {"file":"assets/soldier/walk", "speed":50, "frames":5},
         },
-        100,
-        100,
+        7,
         window,
     )
-    soldier.switch_animation("idle")
-
-    characters["soldier"] = soldier
-    characters["archer"] = archer

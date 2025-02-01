@@ -60,7 +60,7 @@ class StoryScene(SceneBase):
             return
 
         for character in self.characters.values():
-            character.setVisible(False)
+            character.visible = False
 
         # Position visible characters
         y = self.window.height / 2
@@ -76,7 +76,7 @@ class StoryScene(SceneBase):
                 x = self.window.width - (200 * (index + 1))
                 character.setDirection(-1)
 
-            character.setVisible(True)
+            character.visible = True
             character.move_to(x, y)
 
     def nextAction(self):
@@ -115,11 +115,9 @@ class StoryScene(SceneBase):
             self.window.screen.blit(text_surface, text_surface_rect)
 
             action = self.getCurrentAction()
-
-            for c in self.characters.values():
-                c.switch_animation("idle")
-
+            inActiveCharacters = list(self.characters.values())
             character = self.characters[action["character"]]
+            inActiveCharacters.remove(character)
 
             if action["actionType"] == "speak":
                 character.switch_animation("idle")
@@ -133,7 +131,7 @@ class StoryScene(SceneBase):
                 dx = target_char.rect.x - character.rect.x
                 if abs(dx) > 500:
                     dx = 1 if dx > 0 else (-1 if dx < 0 else 0)
-                    character.move(dx, 0)
+                    character.move(dx*5, 0)
                 else:
                     character.switch_animation("idle")
                     self.nextAction()
@@ -146,6 +144,8 @@ class StoryScene(SceneBase):
                 if character.rect.x > self.window.width+100:
                     self.nextAction()
 
+            for c in inActiveCharacters:
+                c.switch_animation("idle")
 
             for character in self.characters.values():
                 character.update()

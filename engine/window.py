@@ -18,3 +18,4 @@ class Window:
     def tick(self, framerate):
         self.clock.tick(framerate)
         self.animation_tick += 1
+
