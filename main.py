@@ -1,6 +1,6 @@
 import pygame
 
-from engine.sprite import loadCharacters
+from engine.sprite import loadCharacters, characters
 from engine.window import Window
 from scenes.LoadingScene import LoadingScene
 from scenes.MenuScene import MenuScene
@@ -16,7 +16,7 @@ story_result = None
 
 loadCharacters(window)
 active_scene = MenuScene(window)
-
+archer = characters["archer"]
 
 # GAME LOOP
 while running:

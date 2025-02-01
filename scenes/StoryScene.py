@@ -1,9 +1,7 @@
 import threading
 import pygame
 import random
-
-from engine.constants import TEXT_COLOR, BG_COLOR
-from engine.ai import createStory
+from engine.ai.generate import createStory
 from engine.button import Button
 from engine.scene import SceneBase
 from engine.sprite import characters
@@ -62,7 +60,7 @@ class StoryScene(SceneBase):
             return
 
         for character in self.characters.values():
-            character.setVisible(False)
+            character.visible = False
 
         # Position visible characters
         y = self.window.height / 2
@@ -70,19 +68,19 @@ class StoryScene(SceneBase):
         for character_name in scene["characters"]:
             character = self.characters[character_name]
             index = list(self.characters.keys()).index(character_name)
+            spacing = 20
 
             if index % 2 == 0:
-                x = 20
+                x = spacing  * (index + 1)
                 character.setDirection(1)
             else:
-                x = self.window.width - (200 * (index + 1))
+                x = self.window.width - character.rect.width - ( spacing * (index + 1))
                 character.setDirection(-1)
 
-            character.setVisible(True)
+            character.visible = True
             character.move_to(x, y)
 
     def nextAction(self):
-        print("Next Action")
         self.actionIndex += 1
 
         if self.actionIndex > len(self.getCurrentScene()["actions"]) - 1:
@@ -96,7 +94,7 @@ class StoryScene(SceneBase):
         self.window.screen.blit(text_object, text_rect)
 
     def Update(self, events, keys):
-        self.window.screen.fill(("#DD88CF"))
+        self.window.screen.fill((0, 0, 0))
 
         if self.story is None:
             self.show_text(self.arial, "Loading...", (self.window.width // 2, (self.window.height // 2) ), (255, 255, 255))
@@ -105,23 +103,21 @@ class StoryScene(SceneBase):
         font = pygame.font.SysFont("Arial", 20)
 
         if self.end:
-            text_surface = font.render("THE END", True, (TEXT_COLOR))
+            text_surface = font.render("THE END", True, (255, 255, 255))
             text_rect = pygame.Rect(0, 0, self.window.width, self.window.height)
             text_surface_rect = text_surface.get_rect(center=text_rect.center)
             self.window.screen.blit(text_surface, text_surface_rect)
         else:
             backdrop = self.getCurrentScene()["backdrop"]
-            text_surface = font.render(f"Scene {self.currentScene+1} - {backdrop}", True, (TEXT_COLOR))
+            text_surface = font.render(f"Scene {self.currentScene+1} - {backdrop}", True, (255, 255, 255))
             text_rect = pygame.Rect(0, 0, self.window.width, 40)
             text_surface_rect = text_surface.get_rect(center=text_rect.center)
             self.window.screen.blit(text_surface, text_surface_rect)
 
             action = self.getCurrentAction()
-
-            for c in self.characters.values():
-                c.switch_animation("idle")
-
+            inActiveCharacters = list(self.characters.values())
             character = self.characters[action["character"]]
+            inActiveCharacters.remove(character)
 
             if action["actionType"] == "speak":
                 character.switch_animation("idle")
@@ -133,7 +129,7 @@ class StoryScene(SceneBase):
                 character.switch_animation("walk")
 
                 dx = target_char.rect.x - character.rect.x
-                if abs(dx) > 500:
+                if abs(dx) > 300:
                     dx = 1 if dx > 0 else (-1 if dx < 0 else 0)
                     character.move(dx*5, 0)
                 else:
@@ -148,6 +144,8 @@ class StoryScene(SceneBase):
                 if character.rect.x > self.window.width+100:
                     self.nextAction()
 
+            for c in inActiveCharacters:
+                c.switch_animation("idle")
 
             for character in self.characters.values():
                 character.update()
@@ -189,10 +187,10 @@ class ChoiceScene(SceneBase):
 
     def Update(self, events, keys):
         mouse = pygame.mouse.get_pos()
-        self.window.screen.fill((BG_COLOR))
+        self.window.screen.fill((0, 0, 0))
 
         # Display the title
-        self.show_text(self.title_font, "What should happen next?", (self.width // 2, (self.height // 2) - 200), (TEXT_COLOR))
+        self.show_text(self.title_font, "What should happen next?", (self.width // 2, (self.height // 2) - 200), (255, 255, 255))
 
         for obj in self.buttons:
             obj["button"].show()
