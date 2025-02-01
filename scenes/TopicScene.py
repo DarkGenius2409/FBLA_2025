@@ -36,7 +36,7 @@ class TopicScene(SceneBase):
                 button = Button(self.window, rect, topic)  # Pass rect directly
 
                 def switch(t):
-                    self.Switch(StoryScene(self.window, topic=t))
+                    self.Switch(StoryScene(self.window, prev=self, topic=t))
 
                 self.buttons.append({"button":button, "func":switch, "topic":topic})
                 i += 1

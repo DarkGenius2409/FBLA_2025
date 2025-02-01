@@ -12,8 +12,8 @@ from scenes.SaveScene import SaveScene
 class StoryScene(SceneBase):
     totalScenes = 0
     totalSummary = []
-    def __init__(self, window, topic, end=False):
-        super().__init__(window)
+    def __init__(self, window, prev, topic, end=False):
+        super().__init__(window, prev)
         self.topic = topic
         self.story = None
         self.endStory = end
@@ -27,6 +27,8 @@ class StoryScene(SceneBase):
         self.currentScene = 0
         self.actionIndex = 0
         self.arial = pygame.font.SysFont('arial', 50)
+        self.failed = False
+        self.back_btn = Button(self.window, (self.window.width/2-50,self.window.height/2-25+100,100,50), "Go Back" )
 
         story_thread = threading.Thread(target=self.getStory)
         story_thread.start()
@@ -34,8 +36,13 @@ class StoryScene(SceneBase):
 
     # Creating the story with AI
     def getStory(self):
-        self.story = createStory(self.topic, self.endStory)
-        self.setupActiveScene()
+        try:
+            self.failed = False
+            self.story = createStory(self.topic, self.endStory)
+            self.setupActiveScene()
+        except Exception as e:
+            print(e)
+            self.failed = True
 
     def getCurrentAction(self):
         return self.story["scenes"][self.currentScene]["actions"][self.actionIndex]
@@ -64,8 +71,6 @@ class StoryScene(SceneBase):
         for character in self.characters.values():
             character.visible = False
 
-        # Position visible characters
-        y = self.window.height / 2
 
         for character_name in scene["characters"]:
             character = self.characters[character_name]
@@ -78,6 +83,8 @@ class StoryScene(SceneBase):
             else:
                 x = self.window.width - character.rect.width - ( spacing * (index + 1))
                 character.setDirection(-1)
+
+            y = self.window.height - character.rect.height - 10
 
             character.visible = True
             character.move_to(x, y)
@@ -96,10 +103,28 @@ class StoryScene(SceneBase):
         self.window.screen.blit(text_object, text_rect)
 
     def Update(self, events, keys):
+        self.Show()
+
+        if  self.failed:
+            mouse = pygame.mouse.get_pos()
+
+            for event in events:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.back_btn.on_click(self.SwitchBack, mouse)
+
+
+    def Show(self):
         self.window.screen.fill((BG_COLOR))
 
         if self.story is None:
-            self.show_text(self.arial, "Loading...", (self.window.width // 2, (self.window.height // 2) ), (255, 255, 255))
+            if self.failed:
+                self.show_text(self.arial, "An error occurred!", (self.window.width // 2, (self.window.height // 2)),
+                               (255, 0, 0))
+                self.back_btn.show()
+            else:
+                self.show_text(self.arial, "Loading...", (self.window.width // 2, (self.window.height // 2)),
+                               (255, 255, 255))
+
             return
 
         font = pygame.font.SysFont("Arial", 20)

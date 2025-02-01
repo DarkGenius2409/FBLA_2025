@@ -1,3 +1,5 @@
+from selenium.webdriver.common.devtools.v85.css import Value
+
 from engine.ai.schema import actionTypes, Topics, Story
 from engine.sprite import characters
 import google.generativeai as genai
@@ -30,6 +32,7 @@ def createTopics():
     Topics.model_validate(data)
     return data
 
+
 def createStory(topic, endStory=False):
     action = f"Your task is to create a JSON object continuing a story. So far, {topic}. Continue the story"
 
@@ -39,7 +42,7 @@ def createStory(topic, endStory=False):
     prompt = f"""
     You are a helpful assistant. {action}
     Use the following characters: {characters} as actors in the story.
-    
+
     For the question in the story JSON object, it should be used to determine what happens next in the story. THIS IS VERY IMPORTANT
     The JSON must strictly adhere to the following format:
     Story = {{
@@ -69,12 +72,19 @@ def createStory(topic, endStory=False):
     - Follow the JSON format exactly as specified. Respond only with valid JSON. Do not include an introduction or summary.
     - Fit as many actions into one scene as possible while keeping all actions logical
     - Create a new scene only when a sufficient amount of time has passed since the previous scene or when different characters are performing actions simultaneously. Combine actions into a single scene if they can logically occur within the same timeframe.
-    
+
     Return: Story
     """
 
-    response = model.generate_content(prompt, generation_config=genai.GenerationConfig(response_mime_type="application/json"))
+    response = model.generate_content(prompt,
+                                      generation_config=genai.GenerationConfig(response_mime_type="application/json"))
     data = json.loads(response.text)
-    Story.model_validate(data)
-    return data
+
+    try:
+        Story.model_validate(data)
+        return data
+    except:
+        raise ValueError()
+
+
 
