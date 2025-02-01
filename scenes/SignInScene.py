@@ -3,8 +3,9 @@ import pygame
 from engine.constants import BG_COLOR, TEXT_COLOR
 from engine.button import Button
 from engine.scene import SceneBase
+from engine.text_input import TextInput
 
-class HelpScene(SceneBase):
+class SignInScene(SceneBase):
     def __init__(self, window, prev):
         super().__init__(window, prev)
         self.title_font = pygame.font.SysFont('arial', 90)
@@ -12,7 +13,13 @@ class HelpScene(SceneBase):
         self.height = self.window.height
         self.btn_width = 200
         self.btn_height = 50
-        self.back_btn = Button(self.window, (self.width//2 - self.btn_width/2, self.height//2, self.btn_width, self.btn_height), "Back" )
+        self.username = TextInput(self.window, (self.window.width//2-50, self.window.height//2, 100, 50), "Username")
+        self.password = TextInput(self.window, (self.window.width//2-50, self.window.height//2 + 70, 100, 50), "Password")
+        self.sign_in_btn = Button(self.window, (
+            self.width // 2 - self.btn_width / 2, self.height // 2 + 140, self.btn_width, self.btn_height), "Sign In")
+        self.back_btn = Button(self.window, (
+        self.width // 2 - self.btn_width / 2, self.height // 2 + 210, self.btn_width, self.btn_height),
+                               "Back")
 
     def show_text(self, font, text, pos, color):
         text_object = font.render(text, True, color)
@@ -25,11 +32,10 @@ class HelpScene(SceneBase):
         # Clear the screen with black background
         self.window.screen.fill((BG_COLOR))
 
-        self.show_text(self.title_font,"Need Help?", (self.width // 2, (self.height // 2) - 100 ), (TEXT_COLOR))
+        self.show_text(self.title_font,"Sign In", (self.width // 2, (self.height // 2) - 100 ), (TEXT_COLOR))
 
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
-
                 self.back_btn.on_click(self.SwitchBack, mouse)
 
         self.back_btn.show()
