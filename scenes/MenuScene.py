@@ -1,7 +1,9 @@
 import pygame
 
+from engine.constants import BG_COLOR, TEXT_COLOR
 from engine.button import Button
 from engine.scene import SceneBase
+from scenes.HelpScene import HelpScene
 from scenes.TopicScene import TopicScene
 
 
@@ -13,7 +15,9 @@ class MenuScene(SceneBase):
         self.height = self.window.height
         self.btn_width = 200
         self.btn_height = 50
-        self.start_btn = Button(self.window, (self.width//2, self.height//2, self.btn_width, self.btn_height), "New Story" )
+        self.start_btn = Button(self.window, (self.width//2 - self.btn_width/2, self.height//2, self.btn_width, self.btn_height), "New Story" )
+        self.help_btn = Button(self.window, (self.width // 2 - self.btn_width/2, self.height // 2 + self.btn_height+20, self.btn_width, self.btn_height),
+                                "Help")
 
 
     def show_text(self, font, text, pos, color):
@@ -25,15 +29,19 @@ class MenuScene(SceneBase):
         mouse = pygame.mouse.get_pos()
 
         # Clear the screen with black background
-        self.window.screen.fill((0,0,0))
+        self.window.screen.fill((BG_COLOR))
 
-        self.show_text(self.title_font,"Welcome", (self.width // 2, (self.height // 2) - 100 ), (255,255,255))
+        self.show_text(self.title_font,"Welcome", (self.width // 2, (self.height // 2) - 100 ), (TEXT_COLOR))
 
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                def switch():
+                def switch_topic():
                     self.Switch(TopicScene(self.window))
+                def switch_help():
+                    self.Switch(HelpScene(self.window))
 
-                self.start_btn.on_click(switch, mouse)
+                self.start_btn.on_click(switch_topic, mouse)
+                self.help_btn.on_click(switch_help, mouse)
 
         self.start_btn.show()
+        self.help_btn.show()

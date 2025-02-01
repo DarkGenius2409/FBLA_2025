@@ -1,5 +1,7 @@
 import threading
 import pygame
+
+from engine.constants import TEXT_COLOR, BG_COLOR
 from engine.ai import createTopics
 from engine.button import Button
 from engine.scene import SceneBase
@@ -47,14 +49,14 @@ class TopicScene(SceneBase):
 
     def Update(self, events, keys):
         mouse = pygame.mouse.get_pos()
-        self.window.screen.fill((0, 0, 0))
+        self.window.screen.fill((BG_COLOR))
 
         # Display the title
-        self.show_text(self.title_font, "Which topic do you want?", (self.width // 2, (self.height // 2) - 200), (255, 255, 255))
+        self.show_text(self.title_font, "Which topic do you want?", (self.width // 2, (self.height // 2) - 200), (TEXT_COLOR))
 
         if self.topic_result == None:
             self.show_text(self.title_font, "...", (self.width // 2, (self.height // 2) ),
-                           (255, 255, 255))
+                           (TEXT_COLOR))
         else:
             for obj in self.buttons:
                 obj["button"].show()

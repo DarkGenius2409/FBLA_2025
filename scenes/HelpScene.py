@@ -4,11 +4,11 @@ from engine.constants import TEXT_COLOR, BG_COLOR
 from engine.scene import SceneBase
 from scenes.StoryScene import StoryScene
 
-class LoadingScene(SceneBase):
+class HelpScene(SceneBase):
     def __init__(self, window):
         super().__init__(window)
         self.font = pygame.font.SysFont('arial', 30)
-        self.text = self.font.render('Loading....', True, (TEXT_COLOR))
+        self.text = self.font.render('Help', True, (TEXT_COLOR))
 
 
     def UpdateLoading(self, story_result, events, keys):

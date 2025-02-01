@@ -1,5 +1,7 @@
 import pygame.mouse
 
+from engine.constants import BTN_COLOR, BTN_SELECTED_COLOR
+
 
 class Button:
     def __init__(self, window, rect, text):
@@ -8,8 +10,8 @@ class Button:
         self.text = text
         self.rect = pygame.Rect(rect)  # Use the rect as provided
         self.font = pygame.font.SysFont('arial', 20)
-        self.color_light = (170, 170, 170)
-        self.color_dark = (100, 100, 100)
+        self.color_light = (BTN_SELECTED_COLOR)
+        self.color_dark = (BTN_COLOR)
 
     def on_click(self, func, mouse):
         if self.rect.collidepoint(mouse):
