@@ -38,4 +38,6 @@ class SignInScene(SceneBase):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.back_btn.on_click(self.SwitchBack, mouse)
 
+        self.username.show()
+        self.password.show()
         self.back_btn.show()
