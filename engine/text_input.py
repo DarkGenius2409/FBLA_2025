@@ -1,14 +1,16 @@
 import pygame
+from pygame import Rect
 
 from engine.font import Fonts
 from engine.text import Text
 
 
 class TextInput:
-    def __init__(self, window, rect):
+    def __init__(self, window, rect, placeholder):
         self.window = window
-        self.rect = rect
+        self.rect = Rect(rect)
         self.text = ""
+        self.placeholder = placeholder
         self.active = False
         self.active_color = (170, 170, 170)
         self.passive_color = (100, 100, 100)
@@ -41,8 +43,10 @@ class TextInput:
 
             # draw rectangle and argument passed which should be on screen
         pygame.draw.rect(self.window.screen, color, self.rect)
-
-        text = Text(self.window, Fonts.INPUT, self.text, (self.rect.x+self.rect.w/2, self.rect.y+self.rect.h/2), (255,255,255))
+        if self.text is not None:
+            text = Text(self.window, Fonts.INPUT, self.text, (self.rect.x+self.rect.w/2, self.rect.y+self.rect.h/2))
+        else:
+            text = Text(self.window, Fonts.INPUT, self.placeholder, (self.rect.x+self.rect.w/2, self.rect.y+self.rect.h/2))
 
         text.show()
 

@@ -6,6 +6,7 @@ from engine.button import Button
 from engine.constants import BG_COLOR, TEXT_COLOR
 from engine.scene import SceneBase
 from engine.sprite import characters
+from scenes.SaveScene import SaveScene
 
 
 class StoryScene(SceneBase):
@@ -104,10 +105,11 @@ class StoryScene(SceneBase):
         font = pygame.font.SysFont("Arial", 20)
 
         if self.end:
-            text_surface = font.render("THE END", True, (TEXT_COLOR))
-            text_rect = pygame.Rect(0, 0, self.window.width, self.window.height)
-            text_surface_rect = text_surface.get_rect(center=text_rect.center)
-            self.window.screen.blit(text_surface, text_surface_rect)
+            self.Switch(SaveScene(self.window))
+            # text_surface = font.render("THE END", True, (TEXT_COLOR))
+            # text_rect = pygame.Rect(0, 0, self.window.width, self.window.height)
+            # text_surface_rect = text_surface.get_rect(center=text_rect.center)
+            # self.window.screen.blit(text_surface, text_surface_rect)
         else:
             backdrop = self.getCurrentScene()["backdrop"]
             text_surface = font.render(f"Scene {self.currentScene+1} - {backdrop}", True, (TEXT_COLOR))
