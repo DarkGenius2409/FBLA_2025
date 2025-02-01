@@ -68,19 +68,19 @@ class StoryScene(SceneBase):
         for character_name in scene["characters"]:
             character = self.characters[character_name]
             index = list(self.characters.keys()).index(character_name)
+            spacing = 20
 
             if index % 2 == 0:
-                x = 20
+                x = spacing  * (index + 1)
                 character.setDirection(1)
             else:
-                x = self.window.width - (200 * (index + 1))
+                x = self.window.width - character.rect.width - ( spacing * (index + 1))
                 character.setDirection(-1)
 
             character.visible = True
             character.move_to(x, y)
 
     def nextAction(self):
-        print("Next Action")
         self.actionIndex += 1
 
         if self.actionIndex > len(self.getCurrentScene()["actions"]) - 1:
@@ -129,7 +129,7 @@ class StoryScene(SceneBase):
                 character.switch_animation("walk")
 
                 dx = target_char.rect.x - character.rect.x
-                if abs(dx) > 500:
+                if abs(dx) > 300:
                     dx = 1 if dx > 0 else (-1 if dx < 0 else 0)
                     character.move(dx*5, 0)
                 else:

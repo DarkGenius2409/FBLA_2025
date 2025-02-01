@@ -66,7 +66,6 @@ class Sprite:
 
         return lines
 
-    import pygame
 
     def draw_speech_bubble(self):
         font = pygame.font.SysFont("Arial", 20)
@@ -82,10 +81,7 @@ class Sprite:
         bubble_width = text_width + padding[0] * 2
         bubble_height = text_height + padding[1] * 2
 
-        if self.direction < 0:
-            bubble_x = self.rect.topleft[0]
-        else:
-            bubble_x = self.rect.topright[0]
+        bubble_x = self.rect.x
         bubble_y = self.rect.top - bubble_height - 10
 
         # Ensure bubble is within screen bounds
@@ -137,6 +133,10 @@ class Sprite:
             if self.direction == -1:
                 frame = pygame.transform.flip(frame, True, False)
             self.window.screen.blit(frame, self.rect)
+
+            # hitbox
+            # pygame.draw.rect(self.window.screen, (255,0,0), self.rect,
+            #                  border_radius=10)
 
         if self.isSpeaking and self.speech_text:
            self.draw_speech_bubble()
