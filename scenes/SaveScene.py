@@ -1,9 +1,7 @@
 import pygame
-from pygame import Rect
 
-from engine.button import Button
+from engine.btn.button import Button
 from engine.constants import BG_COLOR, TEXT_COLOR
-from engine.font import Fonts
 from engine.scene import SceneBase
 from engine.text_input import TextInput
 

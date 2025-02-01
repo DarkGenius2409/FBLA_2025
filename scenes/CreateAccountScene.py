@@ -1,9 +1,8 @@
 import pygame
 
 from engine.constants import BG_COLOR, TEXT_COLOR
-from engine.button import Button
+from engine.btn.button import Button
 from engine.scene import SceneBase
-from scenes.MenuScene import MenuScene
 
 
 class CreateAccountScene(SceneBase):
