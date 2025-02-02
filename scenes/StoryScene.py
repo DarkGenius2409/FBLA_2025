@@ -5,7 +5,7 @@ from pygame import Rect
 from engine.ai.generate import createStory
 from engine.btn.button import Button, MenuButton
 from engine.btn.button_grid import ButtonGrid
-from engine.constants import BG_COLOR, TEXT_COLOR
+from engine.colors import BG_COLOR, TEXT_COLOR
 from engine.font import Fonts
 from engine.scene import SceneBase
 from engine.sprite import characters

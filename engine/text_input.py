@@ -1,6 +1,8 @@
 import pygame
 from pygame import Rect
 
+from engine.colors import BTN_SELECTED_COLOR, TEXT_INPUT_SELECTED_COLOR, TEXT_INPUT_COLOR, TEXT_INPUT_BORDER_COLOR, \
+    TEXT_COLOR
 from engine.font import Fonts
 from engine.text import Text
 
@@ -12,8 +14,9 @@ class TextInput:
         self.text = ""
         self.placeholder = placeholder
         self.active = False
-        self.active_color = (170, 170, 170)
-        self.passive_color = (100, 100, 100)
+        self.active_color = TEXT_INPUT_SELECTED_COLOR
+        self.passive_color = TEXT_INPUT_COLOR
+        self.font = Fonts.INPUT
 
     def update(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -35,19 +38,22 @@ class TextInput:
                 else:
                     self.text += event.unicode
 
+    def show_text(self, text):
+        text_object = self.font.value.render(text, True, TEXT_COLOR)
+        text_rect = text_object.get_rect(center=self.rect.center)
+        self.window.screen.blit(text_object, text_rect)
+
     def show(self):
         if self.active:
             color = self.active_color
         else:
             color = self.passive_color
 
+        pygame.draw.rect(self.window.screen, TEXT_INPUT_BORDER_COLOR,
+                         (self.rect.x, self.rect.y, self.rect.w, self.rect.h + 5))
         pygame.draw.rect(self.window.screen, color, self.rect)
-        if self.text is not None:
-            text = Text(self.window, Fonts.INPUT, self.text, (self.rect.x+self.rect.w/2, self.rect.y+self.rect.h/2, self.rect.w, self.rect.h))
-        else:
-            text = Text(self.window, Fonts.INPUT, self.placeholder, (self.rect.x+self.rect.w/2, self.rect.y+self.rect.h/2, self.rect.w, self.rect.h))
 
-        text.show()
+        self.show_text(self.text if self.text != "" else self.placeholder)
 
         # display.flip() will update only a portion of the
         # screen to updated, not full area

@@ -2,6 +2,8 @@ import pygame
 import cv2
 import numpy as np
 
+from cloud import supabase
+
 # CONSTANTS
 WIDTH = 1280
 HEIGHT = 720
@@ -69,8 +71,14 @@ class Window:
             frame = cv2.flip(frame, 1)# Convert to BGR
             self.video_writer.write(frame)
 
-    def export(self):
+    def export(self, name):
         self.stop_recording()
+        with open('./output.mp4', 'rb') as f:
+            response = supabase.storage.from_("exported_videos").upload(
+                file=f,
+                path=f"videos/{name}.mp4",
+                file_options={"cache-control": "3600", "upsert": "false"},
+            )
 
     def tick(self):
         self.clock.tick(self.fps)
