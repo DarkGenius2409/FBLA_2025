@@ -1,9 +1,7 @@
 import threading
 import pygame
 import random
-
 from pygame import Rect
-
 from engine.ai.generate import createStory
 from engine.btn.button import Button, MenuButton
 from engine.btn.button_grid import ButtonGrid
@@ -33,10 +31,15 @@ class StoryScene(SceneBase):
         self.actionIndex = 0
         self.failed = False
         self.back_btn = MenuButton(self.window, (self.window.width/2-50,self.window.height/2-25+100,100,50), "Go Back" )
+        self.background = None
 
         story_thread = threading.Thread(target=self.getStory)
         story_thread.start()
 
+
+    def setBackground(self):
+        scene = self.getCurrentScene()
+        self.background = pygame.transform.scale(pygame.image.load(f"assets/backdrops/{scene["backdrop"]}.png"), (self.window.width, self.window.height))
 
     # Creating the story with AI
     def getStory(self):
@@ -44,6 +47,8 @@ class StoryScene(SceneBase):
             self.failed = False
             self.story = createStory(self.topic, self.endStory)
             self.setupActiveScene()
+            self.window.start_recording()
+            self.setBackground()
         except Exception as e:
             print(e)
             self.failed = True
@@ -60,7 +65,9 @@ class StoryScene(SceneBase):
                 end = random.choice([True, False])
 
             StoryScene.totalSummary.append(self.story["summary"])
-            self.Switch(ChoiceScene(self.window, "\nAfter,".join(StoryScene.totalSummary), self.story["question"], end))
+            self.Switch(ChoiceScene(self.window, "\nAfter,".join(StoryScene.totalSummary), self.story["question"], end, prev=self))
+            self.window.stop_recording()
+            self.background = None
             StoryScene.totalScenes += 1
 
             return None
@@ -88,10 +95,9 @@ class StoryScene(SceneBase):
                 x = self.window.width - character.rect.width - ( spacing * (index + 1))
                 character.setDirection(-1)
 
-            y = self.window.height - character.rect.height - 10
-
             character.visible = True
-            character.move_to(x, y)
+            character.move_to(x, 0)
+            character.rect.bottom = self.window.height + 50
 
     def nextAction(self):
         self.actionIndex += 1
@@ -120,6 +126,9 @@ class StoryScene(SceneBase):
     def Show(self):
         self.window.screen.fill(BG_COLOR)
 
+        if self.background is not None:
+            self.window.screen.blit(self.background, (0,0))
+
         if self.story is None:
             if self.failed:
                 self.show_text(Fonts.TITLE.value, "An error occurred!", (self.window.width // 2, (self.window.height // 2)),
@@ -131,21 +140,10 @@ class StoryScene(SceneBase):
 
             return
 
-        font = Fonts.SCENE_TEXT.value
 
         if self.end:
             self.Switch(SaveScene(self.window))
-            # text_surface = font.render("THE END", True, (TEXT_COLOR))
-            # text_rect = pygame.Rect(0, 0, self.window.width, self.window.height)
-            # text_surface_rect = text_surface.get_rect(center=text_rect.center)
-            # self.window.screen.blit(text_surface, text_surface_rect)
         else:
-            backdrop = self.getCurrentScene()["backdrop"]
-            text_surface = font.render(f"Scene {self.currentScene+1} - {backdrop}", True, TEXT_COLOR)
-            text_rect = pygame.Rect(0, 0, self.window.width, 40)
-            text_surface_rect = text_surface.get_rect(center=text_rect.center)
-            self.window.screen.blit(text_surface, text_surface_rect)
-
             action = self.getCurrentAction()
             inActiveCharacters = list(self.characters.values())
             character = self.characters[action["character"]]
@@ -185,8 +183,8 @@ class StoryScene(SceneBase):
 
 
 class ChoiceScene(SceneBase):
-    def __init__(self, window, previousTopic, question, end=False):
-        super().__init__(window)
+    def __init__(self, window, previousTopic, question, end=False, prev=None):
+        super().__init__(window, prev)
         self.title_font = Fonts.TITLE.value
         self.width = self.window.width
         self.height = self.window.height
@@ -200,24 +198,14 @@ class ChoiceScene(SceneBase):
         self.btn_spacing_x = 20
         self.btn_spacing_y = 20
 
+        rect = pygame.Rect(0, 0, 300, 100)
+        rect.center = (self.window.width/2, 0)
+        rect.bottom = self.window.height - 20
+        self.exitButton = Button(self.window, rect, "Exit!", variant="destructive")
 
         def switch(ans):
-            self.Switch(StoryScene(self.window, end=self.end, topic=f"So far, this has already happened: {previousTopic} Now, {ans}"))
+            self.Switch(StoryScene(self.window, end=self.end,  prev=self, topic=f"So far, this has already happened: {previousTopic} Now, {ans}"))
         self.btn_grid = ButtonGrid(self.window, self.btn_grid_rect, (2,2), (self.btn_spacing_y, self.btn_spacing_y), switch, self.question)
-
-
-        # i = 0
-        # for answer in self.question:
-        #     rect = pygame.Rect(0, 0, self.btn_width, self.btn_height)
-        #     rect.center = (self.window.width / 2, self.window.height / 2 + (self.btn_height + 10) * i)
-        #
-        #     button = Button(self.window, rect, answer)
-        #
-        #     def switch(ans):
-        #         self.Switch(StoryScene(self.window, end=self.end, topic=f"So far, this has already happened: {previousTopic} Now, {ans}"))
-        #
-        #     self.buttons.append(ButtonObj(button, switch,answer))
-        #     i += 1
 
 
     def show_text(self, font, text, pos, color):
@@ -234,8 +222,13 @@ class ChoiceScene(SceneBase):
                        TEXT_COLOR)
 
         self.btn_grid.show()
+        self.exitButton.show()
         # Handle button click events
         for event in events:
-                for obj in self.btn_grid.buttons:
-                    if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    for obj in self.btn_grid.buttons:
                         obj.btn.on_click(lambda: obj.func(obj.text), mouse)
+
+                    def saveScreen():
+                        self.Switch(SaveScene(self.window))
+                    self.exitButton.on_click(saveScreen, mouse )

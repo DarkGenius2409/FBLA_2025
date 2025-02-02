@@ -55,7 +55,6 @@ typing_extensions==4.12.2
 uritemplate==4.1.1
 urllib3==2.2.3
 zstandard==0.23.0
-
 selenium~=4.28.1
 pyttsx3~=2.98
 gTTS~=2.5.4

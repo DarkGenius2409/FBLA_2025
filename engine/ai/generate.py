@@ -1,6 +1,4 @@
-from selenium.webdriver.common.devtools.v85.css import Value
-
-from engine.ai.schema import actionTypes, Topics, Story
+from engine.ai.schema import actionTypes, Topics, Story, backdrops
 from engine.sprite import characters
 import google.generativeai as genai
 import json
@@ -11,13 +9,17 @@ model = genai.GenerativeModel("gemini-1.5-flash")
 
 def createTopics():
     prompt = f"""
-        You are a helpful assistant. Your task is to create a list of 3-5 ORIGINAL story topics. 
-        They should be simple and be a a short sentence long (<10 words)
-        Your stories should feature minimum of 2 of the following characters: {characters}
+        You are a helpful assistant. Your task is to generate a list of 3-5 ORIGINAL story topics that strictly adhere to the given constraints.
         
-        Create NEW, UNIQUE topics - do not copy the examples below.
-        DO NOT create stories that involve any other characters  than: {characters}
-        Ensure the the story topic can be completed with just the the following actions: {actionTypes}
+        - Each topic must involve **at least two** of the provided characters: {characters}.  
+        - Each topic must take place within the given backdrops: {backdrops}.  
+        - **Only use the listed characters**—do not introduce or reference any other entities (e.g., if "dragon" is not in {characters}, it cannot be mentioned).  
+        - The story topics must be **logically feasible** within the provided backdrops.  
+        - The topics must be **achievable using only the following actions**: {actionTypes}.  
+        - Each topic must be a short sentence (<10 words).  
+        - Generate **NEW, UNIQUE** topics that do not copy the examples below.  
+        - Do not directly include the topics in the topic list
+        - Each topic should be a simple coherent sentence, **do not use semicolons**
         
         Follow this exact format:
         Topics = {{
@@ -29,6 +31,7 @@ def createTopics():
 
     response = model.generate_content(prompt, generation_config=genai.GenerationConfig(response_mime_type="application/json"))
     data = json.loads(response.text)
+    print(data)
     Topics.model_validate(data)
     return data
 
@@ -49,7 +52,7 @@ def createStory(topic, endStory=False):
         "scenes": [
             {{
                 "characters": ["A list of characters involved in this scene. Must be a subset of {characters}. All characters directly or indirectly involved in the actions must be included in the scene"],
-                "backdrop": "The backdrop of the scene",
+                "backdrop": "The backdrop of the scene. You can choose from {backdrops}",
                 "actions": [
                     {{
                         "character": "The exact name of one of the characters in the scene",
@@ -60,7 +63,7 @@ def createStory(topic, endStory=False):
             }}
         ],
         "question":["next possibility 1", "next possibility 2", "next possibility 3", "next possibility 4"],
-        "summary":"quick one sentence summary of everything that happened",
+        "summary":"a detailed summary of everything that has happened. ensure to include every action that occurred in a concise manner, because this will be looked at to determine what happens next",
         "end":{endStory}
     }}
 
@@ -79,7 +82,7 @@ def createStory(topic, endStory=False):
     response = model.generate_content(prompt,
                                       generation_config=genai.GenerationConfig(response_mime_type="application/json"))
     data = json.loads(response.text)
-
+    print(data)
     try:
         Story.model_validate(data)
         return data

@@ -41,12 +41,11 @@ class TextInput:
         else:
             color = self.passive_color
 
-            # draw rectangle and argument passed which should be on screen
         pygame.draw.rect(self.window.screen, color, self.rect)
         if self.text is not None:
-            text = Text(self.window, Fonts.INPUT, self.text, (self.rect.x+self.rect.w/2, self.rect.y+self.rect.h/2))
+            text = Text(self.window, Fonts.INPUT, self.text, (self.rect.x+self.rect.w/2, self.rect.y+self.rect.h/2, self.rect.w, self.rect.h))
         else:
-            text = Text(self.window, Fonts.INPUT, self.placeholder, (self.rect.x+self.rect.w/2, self.rect.y+self.rect.h/2))
+            text = Text(self.window, Fonts.INPUT, self.placeholder, (self.rect.x+self.rect.w/2, self.rect.y+self.rect.h/2, self.rect.w, self.rect.h))
 
         text.show()
 

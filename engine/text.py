@@ -1,4 +1,4 @@
-from pygame import Rect
+import pygame
 
 from engine.constants import TEXT_COLOR
 
@@ -8,7 +8,12 @@ class Text:
         self.window = window
         self.font = font
         self.text = text
-        self.rect = rect
+
+        if isinstance(rect, pygame.rect.Rect):
+            self.rect = rect
+        else:
+            self.rect = pygame.rect.Rect(rect)
+
         self.color = TEXT_COLOR
 
     def show(self):

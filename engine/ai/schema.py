@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field, model_validator
 from engine.sprite import characters
 
 actionTypes = ["speak", "leave", "move"]
+backdrops = ["castle", "cave", "desert", "lake", "village", "village2"]
 
 class Action(BaseModel):
     character: str = Field(description="Name of character doing the action")
@@ -39,6 +40,9 @@ class Scene(BaseModel):
                 raise ValueError(
                     f"Invalid character '{character}' in scene characters list. Valid characters are: {characters}")
 
+        if self.backdrop not in backdrops:
+            raise ValueError(
+                f"Invalid backdrop")
         # Also validate characters used in actions
         for action in self.actions:
             if action.character not in characters:

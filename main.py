@@ -4,7 +4,6 @@ import pygame
 
 from engine.sprite import loadCharacters, characters
 from engine.window import Window
-from scenes.LoadingScene import LoadingScene
 from scenes.MenuScene import MenuScene
 
 # PYGAME SETUP
@@ -14,13 +13,11 @@ pygame.mixer.init()
 
 # Game Global Variables
 window = Window()
-running = True
-story_result = None
-
-loadCharacters(window)
 active_scene = MenuScene(window, None)
-frame = 1
-# archer = characters["archer"]
+loadCharacters(window)
+
+
+running = True
 
 # GAME LOOP
 while running:
@@ -30,13 +27,11 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        window.handle_event(event)
         events.append(event)
 
     # Update current scene
-    if isinstance(active_scene, LoadingScene):
-        active_scene.UpdateLoading(story_result, events, keys)
-    else:
-        active_scene.Update(events, keys)
+    active_scene.Update(events, keys)
 
     # Update current scene; if no scene switch, then active_scene.next should be equal to active_scene
     if active_scene.next is not None:
@@ -44,12 +39,9 @@ while running:
         active_scene.next = None
         active_scene = next_scene
 
-    pygame.image.save(window.screen, f"output/frames/screen_%09d.png" % frame)
 
     pygame.display.flip()
-    frame+=1
-    window.tick(60)
+    window.update_recording()
+    window.tick()
 
-os.system(f"compile.bat output")
 pygame.quit()
-quit()
