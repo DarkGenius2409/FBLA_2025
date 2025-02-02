@@ -1,3 +1,5 @@
+import os
+
 import pygame
 
 from engine.sprite import loadCharacters, characters
@@ -17,6 +19,7 @@ story_result = None
 
 loadCharacters(window)
 active_scene = MenuScene(window, None)
+frame = 1
 # archer = characters["archer"]
 
 # GAME LOOP
@@ -41,7 +44,12 @@ while running:
         active_scene.next = None
         active_scene = next_scene
 
+    pygame.image.save(window.screen, f"output/frames/screen_%09d.png" % frame)
+
     pygame.display.flip()
+    frame+=1
     window.tick(60)
 
+os.system(f"compile.bat output")
 pygame.quit()
+quit()

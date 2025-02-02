@@ -2,7 +2,7 @@ import pygame.mouse
 from django.utils.timezone import override
 from pygame import Rect
 
-from engine.constants import BTN_COLOR, BTN_SELECTED_COLOR, TEXT_COLOR, BTN_TEXT_COLOR
+from engine.constants import BTN_COLOR, BTN_SELECTED_COLOR, TEXT_COLOR, BTN_TEXT_COLOR, BTN_BORDER_COLOR
 from engine.font import Fonts
 
 
@@ -12,8 +12,6 @@ class Button:
         self.window = window
         self.text = text
         self.rect = pygame.Rect(rect)  # Use the rect as provided
-        self.color_light = BTN_SELECTED_COLOR
-        self.color_dark = BTN_COLOR
 
     def on_click(self, func, mouse):
         if self.rect.collidepoint(mouse):
@@ -56,10 +54,11 @@ class Button:
 
     def show(self):
         mouse = pygame.mouse.get_pos()
+        pygame.draw.rect(self.window.screen, BTN_BORDER_COLOR, (self.rect.x-3, self.rect.y-3, self.rect.w+6, self.rect.h+6), border_radius=28)
         if self.rect.collidepoint(mouse):
-            pygame.draw.rect(self.window.screen, self.color_light, self.rect, border_radius=25)
+            pygame.draw.rect(self.window.screen, BTN_SELECTED_COLOR, self.rect, border_radius=25)
         else:
-            pygame.draw.rect(self.window.screen, self.color_dark, self.rect, border_radius=25)
+            pygame.draw.rect(self.window.screen, BTN_COLOR, self.rect, border_radius=25)
 
         self.show_text(self.text)
 

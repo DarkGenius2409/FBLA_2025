@@ -17,9 +17,9 @@ class MenuScene(SceneBase):
         self.btn_width = 200
         self.btn_height = 50
         self.start_btn = MenuButton(self.window, (self.width//2 - self.btn_width/2, self.height//2, self.btn_width, self.btn_height), "New Story" )
-        self.sign_in_btn = MenuButton(self.window, (
-        self.width // 2 - self.btn_width / 2, self.height // 2 + self.btn_height+20, self.btn_width, self.btn_height), "Sign In")
-        self.help_btn = MenuButton(self.window, (self.width // 2 - self.btn_width/2, self.height // 2 + 2*(self.btn_height+20), self.btn_width, self.btn_height),
+        # self.sign_in_btn = MenuButton(self.window, (
+        # self.width // 2 - self.btn_width / 2, self.height // 2 + self.btn_height+20, self.btn_width, self.btn_height), "Sign In")
+        self.help_btn = MenuButton(self.window, (self.width // 2 - self.btn_width/2, self.height // 2 + (self.btn_height+20), self.btn_width, self.btn_height),
                                 "Help")
 
 
@@ -45,9 +45,9 @@ class MenuScene(SceneBase):
                     self.Switch(HelpScene(self.window, self))
 
                 self.start_btn.on_click(switch_topic, mouse)
-                self.sign_in_btn.on_click(switch_sign_in, mouse)
+                # self.sign_in_btn.on_click(switch_sign_in, mouse)
                 self.help_btn.on_click(switch_help, mouse)
 
         self.start_btn.show()
-        self.sign_in_btn.show()
+        # self.sign_in_btn.show()
         self.help_btn.show()

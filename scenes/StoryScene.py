@@ -31,7 +31,6 @@ class StoryScene(SceneBase):
         self.end = False
         self.currentScene = 0
         self.actionIndex = 0
-        self.arial = pygame.font.SysFont('arial', 50)
         self.failed = False
         self.back_btn = MenuButton(self.window, (self.window.width/2-50,self.window.height/2-25+100,100,50), "Go Back" )
 
