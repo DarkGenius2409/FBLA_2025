@@ -3,7 +3,7 @@ import os
 import pygame
 
 from engine.btn.button import Button
-from engine.colors import BG_COLOR, TEXT_COLOR
+from engine.constants import BG_COLOR, TEXT_COLOR
 from engine.font import Fonts
 from engine.scene import SceneBase
 from engine.text_input import TextInput

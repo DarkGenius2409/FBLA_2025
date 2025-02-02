@@ -1,7 +1,7 @@
 import pygame
 
 from cloud import supabase
-from engine.colors import BG_COLOR, TEXT_COLOR
+from engine.constants import BG_COLOR, TEXT_COLOR
 from engine.btn.button import Button
 from engine.font import Fonts
 from engine.scene import SceneBase

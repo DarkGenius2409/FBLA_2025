@@ -1,7 +1,7 @@
 import pygame
 from pygame import Rect
 
-from engine.colors import BTN_SELECTED_COLOR, TEXT_INPUT_SELECTED_COLOR, TEXT_INPUT_COLOR, TEXT_INPUT_BORDER_COLOR, \
+from engine.constants import BTN_SELECTED_COLOR, TEXT_INPUT_SELECTED_COLOR, TEXT_INPUT_COLOR, TEXT_INPUT_BORDER_COLOR, \
     TEXT_COLOR
 from engine.font import Fonts
 from engine.text import Text

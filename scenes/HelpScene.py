@@ -1,6 +1,6 @@
 import pygame
 
-from engine.colors import BG_COLOR, TEXT_COLOR
+from engine.constants import BG_COLOR, TEXT_COLOR, TITLE_COLOR
 from engine.btn.button import Button, MenuButton
 from engine.font import Fonts
 from engine.scene import SceneBase

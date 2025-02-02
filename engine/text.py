@@ -1,6 +1,6 @@
 import pygame
 
-from engine.colors import TEXT_COLOR
+from engine.constants import TEXT_COLOR
 
 
 class Text:

@@ -1,7 +1,7 @@
 import pygame
 
 from cloud import supabase
-from engine.colors import BG_COLOR, TEXT_COLOR
+from engine.constants import BG_COLOR, TEXT_COLOR, TITLE_COLOR
 from engine.btn.button import Button, MenuButton
 from engine.font import Fonts
 from engine.scene import SceneBase
@@ -20,7 +20,7 @@ class MenuScene(SceneBase):
         self.signed_in = False
         self.start_btn = MenuButton(self.window, (self.width//2 - self.btn_width/2, self.height//2, self.btn_width, self.btn_height), "New Story" )
         self.sign_in_btn = MenuButton(self.window, (
-        self.width // 2 - self.btn_width / 2, self.height // 2 + self.btn_height+20, self.btn_width, self.btn_height), "Sign In")
+            self.width // 2 - self.btn_width / 2, self.height // 2 + self.btn_height+20, self.btn_width, self.btn_height), "Sign In")
         self.sign_out_btn = MenuButton(self.window, (
             self.width // 2 - self.btn_width / 2, self.height // 2 + self.btn_height + 20, self.btn_width,
             self.btn_height), "Sign Out")
@@ -41,31 +41,32 @@ class MenuScene(SceneBase):
 
     def Update(self, events, keys):
         mouse = pygame.mouse.get_pos()
+
         if supabase.auth.get_user() is not None:
             self.signed_in = True
 
         self.window.screen.fill(BG_COLOR)
         self.window.screen.blit( self.background, (0,0))
-        self.show_text(Fonts.WELCOME.value,"GemPlay", (self.width // 2+50, (self.height // 2) - 100), "#8dab7f")
+        self.show_text(Fonts.WELCOME.value,"GemPlay", (self.width // 2+50, (self.height // 2) - 100), TITLE_COLOR)
 
-        self.show_text(Fonts.WELCOME.value,"Welcome", (self.width // 2, (self.height // 2) - 100), TEXT_COLOR)
-
+        self.window.screen.blit(self.logo, (self.width//2-250, self.height//2-175))
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 def switch_topic():
                     self.Switch(TopicScene(self.window))
                 def switch_sign_in():
                     self.Switch(SignInScene(self.window, self))
-                def switch_help():
-                    self.Switch(HelpScene(self.window, self))
+
                 def switch_sign_out():
                     supabase.auth.sign_out()
                     self.Switch(MenuScene(self.window, self))
+                def switch_help():
+                    self.Switch(HelpScene(self.window, self))
 
                 self.start_btn.on_click(switch_topic, mouse)
-                self.sign_out_btn.on_click(switch_sign_out, mouse) if self.signed_in else self.sign_in_btn.on_click(switch_sign_in, mouse)
+                self.sign_in_btn.on_click(switch_sign_in, mouse) if not self.signed_in else self.sign_out_btn.on_click(switch_sign_out, mouse)
                 self.help_btn.on_click(switch_help, mouse)
 
         self.start_btn.show()
-        self.sign_out_btn.show() if self.signed_in else self.sign_in_btn.show()
+        self.sign_in_btn.show() if not self.signed_in else self.sign_out_btn.show()
         self.help_btn.show()
