@@ -8,6 +8,7 @@ from scenes.MenuScene import MenuScene
 # PYGAME SETUP
 pygame.init()
 pygame.font.init()
+pygame.mixer.init()
 
 # Game Global Variables
 window = Window()
