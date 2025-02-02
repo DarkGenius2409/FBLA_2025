@@ -6,6 +6,7 @@ from engine.ai.generate import createTopics
 from engine.btn.button import Button
 from engine.btn.button_grid import ButtonGrid
 from engine.constants import BG_COLOR, TEXT_COLOR
+from engine.font import Fonts
 from engine.scene import SceneBase
 from scenes.StoryScene import StoryScene
 
@@ -13,7 +14,7 @@ from scenes.StoryScene import StoryScene
 class TopicScene(SceneBase):
     def __init__(self, window):
         super().__init__(window)
-        self.title_font = pygame.font.SysFont('arial', 50)
+        self.title_font = Fonts.TITLE.value
         self.width = self.window.width
         self.height = self.window.height
 

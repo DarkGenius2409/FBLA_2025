@@ -2,6 +2,8 @@ import pygame
 from gtts import gTTS
 import pyttsx3
 
+from engine.font import Fonts
+
 engine = pyttsx3.init()
 
 characters = {}
@@ -72,14 +74,8 @@ class Sprite:
 
 
     def draw_speech_bubble(self):
-        font = pygame.font.SysFont("Arial", 20)
+        font = Fonts.SPEECH_TEXT.value
         padding = (20, 20)
-
-        # gTTS(self.speech_text).save("speech.mp3")
-        #
-        # pygame.mixer.music.load("speech.mp3")
-        # pygame.mixer.music.play()
-        # pygame.mixer.music.unload()
 
         engine.say(self.speech_text)
 

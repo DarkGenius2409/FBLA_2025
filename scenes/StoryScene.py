@@ -8,6 +8,7 @@ from engine.ai.generate import createStory
 from engine.btn.button import Button
 from engine.btn.button_grid import ButtonGrid
 from engine.constants import BG_COLOR, TEXT_COLOR
+from engine.font import Fonts
 from engine.scene import SceneBase
 from engine.sprite import characters
 from scenes.SaveScene import SaveScene
@@ -122,16 +123,16 @@ class StoryScene(SceneBase):
 
         if self.story is None:
             if self.failed:
-                self.show_text(self.arial, "An error occurred!", (self.window.width // 2, (self.window.height // 2)),
+                self.show_text(Fonts.TITLE.value, "An error occurred!", (self.window.width // 2, (self.window.height // 2)),
                                (255, 0, 0))
                 self.back_btn.show()
             else:
-                self.show_text(self.arial, "Loading...", (self.window.width // 2, (self.window.height // 2)),
+                self.show_text(Fonts.TITLE.value, "Loading...", (self.window.width // 2, (self.window.height // 2)),
                                TEXT_COLOR)
 
             return
 
-        font = pygame.font.SysFont("Arial", 20)
+        font = Fonts.SCENE_TEXT.value
 
         if self.end:
             self.Switch(SaveScene(self.window))
@@ -187,7 +188,7 @@ class StoryScene(SceneBase):
 class ChoiceScene(SceneBase):
     def __init__(self, window, previousTopic, question, end=False):
         super().__init__(window)
-        self.title_font = pygame.font.SysFont('arial', 50)
+        self.title_font = Fonts.TITLE.value
         self.width = self.window.width
         self.height = self.window.height
 

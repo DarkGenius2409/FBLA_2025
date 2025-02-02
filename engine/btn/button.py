@@ -1,7 +1,8 @@
 import pygame.mouse
+from django.utils.timezone import override
 from pygame import Rect
 
-from engine.constants import BTN_COLOR, BTN_SELECTED_COLOR, TEXT_COLOR
+from engine.constants import BTN_COLOR, BTN_SELECTED_COLOR, TEXT_COLOR, BTN_TEXT_COLOR
 from engine.font import Fonts
 
 
@@ -11,7 +12,6 @@ class Button:
         self.window = window
         self.text = text
         self.rect = pygame.Rect(rect)  # Use the rect as provided
-        self.font = Fonts.BTN_TEXT.value
         self.color_light = BTN_SELECTED_COLOR
         self.color_dark = BTN_COLOR
 
@@ -19,13 +19,14 @@ class Button:
         if self.rect.collidepoint(mouse):
             func()
 
-    def show_text(self, text, aa=False, bkg=None):
+    def show_text(self, text):
         rect = self.rect
+        font = Fonts.BTN_TEXT.value
         y = rect.centery
         lineSpacing = -2
 
         # get the height of the font
-        fontHeight = self.font.size("Tg")[1]
+        fontHeight = font.size("Tg")[1]
 
         while text:
             i = 1
@@ -35,22 +36,17 @@ class Button:
                 break
 
             # determine maximum width of line
-            while self.font.size(text[:i])[0] < rect.width and i < len(text):
+            while font.size(text[:i])[0] < rect.width and i < len(text):
                 i += 1
 
             # if we've wrapped the text, then adjust the wrap to the last word
             if i < len(text):
                 i = text.rfind(" ", 0, i) + 1
 
-            # render the line and blit it to the surface
-            if bkg:
-                image = self.font.render(text[:i], 1, TEXT_COLOR, bkg)
-                image.set_colorkey(bkg)
-            else:
-                image = self.font.render(text[:i], aa, TEXT_COLOR)
-
+            image = font.render(text[:i], True, BTN_TEXT_COLOR)
             text_rect = image.get_rect(center=(self.rect.centerx, y))
             self.window.screen.blit(image, text_rect)
+
             y += fontHeight + lineSpacing
 
             # remove the text we just blitted
@@ -66,3 +62,14 @@ class Button:
             pygame.draw.rect(self.window.screen, self.color_dark, self.rect, border_radius=25)
 
         self.show_text(self.text)
+
+class MenuButton(Button):
+    def __init__(self, window, rect, text):
+        super().__init__(window, rect, text)
+
+    def show_text(self, text):
+        text_object = Fonts.MENU_BTN_TEXT.value.render(text, True, BTN_TEXT_COLOR)
+        text_rect = text_object.get_rect(center=self.rect.center)
+        self.window.screen.blit(text_object, text_rect)
+
+
