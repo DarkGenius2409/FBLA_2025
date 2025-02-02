@@ -29,12 +29,15 @@ class TopicScene(SceneBase):
         self.btn_spacing_x = 20
         self.btn_spacing_y = 20
 
+        self.background = pygame.image.load("assets/menu_background.png").convert_alpha()
+        self.background = pygame.transform.scale(self.background, (self.window.width, self.window.height))
+        self.background.set_alpha(55)
+
         def switch(t):
             self.Switch(StoryScene(self.window, prev=self, topic=t))
 
         self.btn_grid = ButtonGrid(self.window, self.btn_grid_rect, (2, 2), (self.btn_spacing_y, self.btn_spacing_y),
                                    switch, self.topics)
-
 
 
     def getTopics(self):
@@ -66,6 +69,7 @@ class TopicScene(SceneBase):
     def Update(self, events, keys):
         mouse = pygame.mouse.get_pos()
         self.window.screen.fill(BG_COLOR)
+        self.window.screen.blit( self.background, (0,0))
 
         # Display the title
         self.show_text(self.title_font, "Which topic do you want?", (self.width // 2, (self.height // 2) - 200),

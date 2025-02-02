@@ -22,6 +22,12 @@ class MenuScene(SceneBase):
         self.help_btn = MenuButton(self.window, (self.width // 2 - self.btn_width/2, self.height // 2 + (self.btn_height+20), self.btn_width, self.btn_height),
                                 "Help")
 
+        self.background = pygame.image.load("assets/menu_background.png").convert_alpha()
+        self.background = pygame.transform.scale(self.background, (self.window.width, self.window.height))
+        self.background.set_alpha(55)
+
+        self.logo = pygame.image.load("assets/logo.png")
+        self.logo = pygame.transform.scale(self.logo, (150, 150))
 
     def show_text(self, font, text, pos, color):
         text_object = font.render(text, True, color)
@@ -32,9 +38,10 @@ class MenuScene(SceneBase):
         mouse = pygame.mouse.get_pos()
 
         self.window.screen.fill(BG_COLOR)
+        self.window.screen.blit( self.background, (0,0))
+        self.show_text(Fonts.WELCOME.value,"GemPlay", (self.width // 2+50, (self.height // 2) - 100), "#8dab7f")
 
-        self.show_text(Fonts.WELCOME.value,"Welcome", (self.width // 2, (self.height // 2) - 100), TEXT_COLOR)
-
+        self.window.screen.blit(self.logo, (self.width//2-250, self.height//2-175))
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 def switch_topic():

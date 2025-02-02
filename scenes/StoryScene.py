@@ -202,6 +202,9 @@ class ChoiceScene(SceneBase):
         rect.center = (self.window.width/2, 0)
         rect.bottom = self.window.height - 20
         self.exitButton = Button(self.window, rect, "Exit!", variant="destructive")
+        self.background = pygame.image.load("assets/menu_background.png").convert_alpha()
+        self.background = pygame.transform.scale(self.background, (self.window.width, self.window.height))
+        self.background.set_alpha(55)
 
         def switch(ans):
             self.Switch(StoryScene(self.window, end=self.end,  prev=self, topic=f"So far, this has already happened: {previousTopic} Now, {ans}"))
@@ -216,6 +219,7 @@ class ChoiceScene(SceneBase):
     def Update(self, events, keys):
         mouse = pygame.mouse.get_pos()
         self.window.screen.fill(BG_COLOR)
+        self.window.screen.blit( self.background, (0,0))
 
         # Display the title
         self.show_text(self.title_font, "What should happen next?", (self.width // 2, (self.height // 2) - 200),
