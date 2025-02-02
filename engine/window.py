@@ -5,7 +5,7 @@ import numpy as np
 # CONSTANTS
 WIDTH = 1280
 HEIGHT = 720
-TITLE = "FBLA 2025"
+TITLE = "GenPlay"
 
 
 class Window:
@@ -65,7 +65,8 @@ class Window:
         if self.recording and self.video_writer:
             frame = pygame.surfarray.array3d(self.screen)
             frame = np.rot90(frame, k=-1)  # Rotate to match OpenCV format
-            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)  # Convert to BGR
+            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+            frame = cv2.flip(frame, 1)# Convert to BGR
             self.video_writer.write(frame)
 
     def export(self):

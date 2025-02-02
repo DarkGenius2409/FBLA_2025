@@ -10,6 +10,7 @@ class Button:
         self.text = text
         self.rect = pygame.Rect(rect)  # Use the rect as provided
         self.variant = variant
+        self.font = Fonts.BTN_TEXT.value
 
     def on_click(self, func, mouse):
         if self.rect.collidepoint(mouse):
@@ -19,7 +20,8 @@ class Button:
         rect = self.rect
         font = Fonts.BTN_TEXT.value
         y = rect.centery
-        lineSpacing = -2
+        lineSpacing = 2
+        lines = []
 
         # get the height of the font
         fontHeight = font.size("Tg")[1]
@@ -50,6 +52,28 @@ class Button:
 
         return text
 
+    def wrap_text(self, text):
+        rect = self.rect
+        lines = []
+
+        while text:
+            i = 1
+
+            # determine maximum width of line
+            while self.font.size(text[:i])[0] < rect.width-24 and i < len(text):
+                i += 1
+
+            # if we've wrapped the text, then adjust the wrap to the last word
+            if i < len(text):
+                i = text.rfind(" ", 0, i) + 1
+
+            lines.append(text[:i])
+
+            # remove the text we just blitted
+            text = text[i:]
+
+        return lines
+
     def show(self):
         mouse = pygame.mouse.get_pos()
 
@@ -66,7 +90,17 @@ class Button:
                          (self.rect.x - 3, self.rect.y - 3, self.rect.w + 6, self.rect.h + 6), border_radius=28)
         pygame.draw.rect(self.window.screen, fill_color, self.rect, border_radius=25)
 
-        self.show_text(self.text)
+        lines = self.wrap_text(self.text)
+
+        fontHeight = self.font.size("Tg")[1]
+        lineSpacing = 2
+        y = self.rect.centery-((len(lines)-1)*0.5*(fontHeight+lineSpacing))
+
+        for line in lines:
+            image = self.font.render(line, True, BTN_TEXT_COLOR)
+            text_rect = image.get_rect(center=(self.rect.centerx, y))
+            self.window.screen.blit(image, text_rect)
+            y += fontHeight + lineSpacing
 
 
 class MenuButton(Button):
