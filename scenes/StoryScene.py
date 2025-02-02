@@ -5,7 +5,7 @@ import random
 from pygame import Rect
 
 from engine.ai.generate import createStory
-from engine.btn.button import Button
+from engine.btn.button import Button, MenuButton
 from engine.btn.button_grid import ButtonGrid
 from engine.constants import BG_COLOR, TEXT_COLOR
 from engine.font import Fonts
@@ -33,7 +33,7 @@ class StoryScene(SceneBase):
         self.actionIndex = 0
         self.arial = pygame.font.SysFont('arial', 50)
         self.failed = False
-        self.back_btn = Button(self.window, (self.window.width/2-50,self.window.height/2-25+100,100,50), "Go Back" )
+        self.back_btn = MenuButton(self.window, (self.window.width/2-50,self.window.height/2-25+100,100,50), "Go Back" )
 
         story_thread = threading.Thread(target=self.getStory)
         story_thread.start()

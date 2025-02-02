@@ -36,7 +36,7 @@ class Button:
                 break
 
             # determine maximum width of line
-            while font.size(text[:i])[0] < rect.width and i < len(text):
+            while font.size(text[:i])[0] < rect.width-24 and i < len(text):
                 i += 1
 
             # if we've wrapped the text, then adjust the wrap to the last word

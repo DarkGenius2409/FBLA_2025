@@ -11,4 +11,4 @@ class Fonts(Enum):
     MENU_BTN_TEXT = pygame.font.Font('assets/fonts/Nunito-ExtraBold.ttf', 18)
     BTN_TEXT = pygame.font.Font('assets/fonts/Nunito-Regular.ttf', 32)
     SPEECH_TEXT = pygame.font.Font('assets/fonts/Nunito-Light.ttf', 20)
-    SCENE_TEXT = pygame.font.Font('assets/fonts/Nunito-Light.ttf', 20)
+    SCENE_TEXT = pygame.font.Font('assets/fonts/Nunito-Regular.ttf', 32)
