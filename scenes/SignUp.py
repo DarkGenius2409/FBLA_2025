@@ -8,7 +8,7 @@ from engine.font import Fonts
 from engine.scene import SceneBase
 from engine.text_input import TextInput
 
-class SignInScene(SceneBase):
+class SignUpScene(SceneBase):
     def __init__(self, window, prev):
         super().__init__(window, prev)
         self.title_font = Fonts.WELCOME.value
@@ -19,7 +19,7 @@ class SignInScene(SceneBase):
         self.email = TextInput(self.window, (self.window.width // 2 - 150, self.window.height // 2 - 50, 300, 50), "Username")
         self.password = TextInput(self.window, (self.window.width//2-150, self.window.height//2 + 20, 300, 50), "Password")
         self.sign_in_btn = Button(self.window, (
-            self.width // 2 - self.btn_width / 2, self.height // 2 + 140, self.btn_width, self.btn_height), "Sign In")
+            self.width // 2 - self.btn_width / 2, self.height // 2 + 140, self.btn_width, self.btn_height), "Create Account")
         self.back_btn = Button(self.window, (
         self.width // 2 - self.btn_width / 2, self.height // 2 + 210, self.btn_width, self.btn_height),
                                "Back")

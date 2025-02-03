@@ -20,19 +20,19 @@ class LibraryScene(SceneBase):
         self.btn_height = 50
         self.cards = []
         if len(thumbnails) >= 1:
-            card_rect = Rect(0, 0, self.width / 2 - 85, self.height / 2)
-            card_rect.centery = self.height // 2 + 75
-            card_rect.right = self.width - 10
+            card_rect = Rect(0, 0, self.width / 2 - 85, self.height / 4)
+            card_rect.centery = self.height // 2
+            card_rect.right = self.width/2 - 10
             self.cards.append(Card(self.window, card_rect, thumbnails[0], videos[0], names[0]))
         if len(thumbnails) >= 2:
-            card_rect = Rect(0, 0, self.width / 2 - 85, self.height / 2)
-            card_rect.centery = self.height // 2 + 75
-            card_rect.left = self.width + 10
+            card_rect = Rect(0, 0, self.width / 2 - 85, self.height / 4)
+            card_rect.centery = self.height // 2
+            card_rect.left = self.width/2 + 10
             self.cards.append(Card(self.window, card_rect, thumbnails[1], videos[1], names[1]))
-        if len(thumbnails) == 3:
-            card_rect = Rect(0, 0, self.width/2 - 85, self.height / 2)
-            card_rect.centery = self.height // 2 + 170
-            card_rect.right = self.width - 10
+        if len(thumbnails) >= 3:
+            card_rect = Rect(0, 0, self.width/2 - 85, self.height / 4)
+            card_rect.centery = 3* self.height / 2 + 20
+            card_rect.right = self.width/2 - 10
             self.cards.append(Card(self.window, card_rect, thumbnails[2], videos[2], names[2]))
         elif len(thumbnails) >= 4:
             self.cards = self.create_grid(thumbnails, videos, names).cards

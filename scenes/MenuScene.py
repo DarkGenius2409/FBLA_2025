@@ -1,3 +1,5 @@
+import os.path
+
 import pygame
 
 from cloud import supabase
@@ -8,6 +10,7 @@ from engine.scene import SceneBase
 from scenes.HelpScene import HelpScene
 from scenes.LibraryScene import LibraryScene
 from scenes.SignInScene import SignInScene
+from scenes.SignUp import SignUpScene
 from scenes.TopicScene import TopicScene
 
 
@@ -35,6 +38,10 @@ class MenuScene(SceneBase):
         self.width // 2 - self.btn_width / 2, self.height // 2 + 3 * (self.btn_height + 20), self.btn_width,
         self.btn_height),
                                    "Library")
+        self.sign_up_btn = MenuButton(self.window, (
+            self.width // 2 - self.btn_width / 2, self.height // 2 + 3 * (self.btn_height + 20), self.btn_width,
+            self.btn_height),
+                                      "Sign Up")
 
         self.background = pygame.image.load("assets/menu_background.png").convert_alpha()
         self.background = pygame.transform.scale(self.background, (self.window.width, self.window.height))
@@ -55,24 +62,28 @@ class MenuScene(SceneBase):
             self.signed_in = True
             if not self.fetched_stories:
                 user_email = supabase.auth.get_user().user.email
-                data = supabase.table("stories").select("name, video_path, thumbnail_path").eq("user",
-                                                                                               user_email).execute().data
+                data = (supabase.table("stories")
+                        .select("name, video_path, thumbnail_path")
+                        .eq("user",user_email)
+                        .execute().data)
                 for obj in data:
                     self.names.append(obj["name"])
                     thumbnail_path = f"./library/{obj['name']}_thumbnail.png"
-                    with open(thumbnail_path, "wb+") as f:
-                        response = supabase.storage.from_("exported_videos").download(
-                            obj["thumbnail_path"]
-                        )
-                        f.write(response)
+                    if not os.path.exists(thumbnail_path):
+                        with open(thumbnail_path, "wb+") as f:
+                            response = supabase.storage.from_("exported_videos").download(
+                                obj["thumbnail_path"]
+                            )
+                            f.write(response)
                     self.thumbnail_paths.append(thumbnail_path)
 
                     video_path = f"./library/{obj['name']}_video.mp4"
-                    with open(video_path, "wb+") as f:
-                        response = supabase.storage.from_("exported_videos").download(
-                            obj["video_path"]
-                        )
-                        f.write(response)
+                    if not os.path.exists(video_path):
+                        with open(video_path, "wb+") as f:
+                            response = supabase.storage.from_("exported_videos").download(
+                                obj["video_path"]
+                            )
+                            f.write(response)
                     self.video_paths.append(video_path)
 
         self.window.screen.fill(BG_COLOR)
@@ -89,11 +100,13 @@ class MenuScene(SceneBase):
                 self.start_btn.on_click(lambda: self.Switch(TopicScene(self.window)), mouse)
                 self.sign_in_btn.on_click(lambda: self.Switch(SignInScene(self.window, self)), mouse) if not self.signed_in else self.sign_out_btn.on_click(sign_out, mouse)
                 self.help_btn.on_click(lambda: self.Switch(HelpScene(self.window, self)), mouse)
-                if self.signed_in:
-                    self.library_btn.on_click(lambda: self.Switch(LibraryScene(self.window, self, self.thumbnail_paths, self.video_paths, self.names)), mouse)
+
+                self.library_btn.on_click(lambda: self.Switch(LibraryScene(self.window, self, self.thumbnail_paths, self.video_paths, self.names)), mouse) if self.signed_in else self.sign_up_btn.on_click(lambda: self.Switch(SignUpScene(self.window, self)), mouse)
+
+
 
         self.start_btn.show()
         self.sign_in_btn.show() if not self.signed_in else self.sign_out_btn.show()
         self.help_btn.show()
-        if self.signed_in:
-            self.library_btn.show()
+        self.library_btn.show() if self.signed_in else self.sign_up_btn.show()
+
