@@ -5,7 +5,6 @@ import json
 
 genai.configure(api_key="AIzaSyDkzJl2M3CorRI35eKDcZkIJ3X-1PkGTJc")
 model = genai.GenerativeModel("gemini-1.5-flash")
-music = ["chill1", "chill2", "intense"]
 
 def askQuestion(question):
     prompt = f"""

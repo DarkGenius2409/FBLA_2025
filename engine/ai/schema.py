@@ -3,6 +3,7 @@ from engine.sprite import characters
 
 actionTypes = ["speak", "leave", "move"]
 backdrops = ["castle", "cave", "desert", "lake", "village", "village2"]
+music = ["chill1", "chill2", "intense"]
 
 class Action(BaseModel):
     character: str = Field(description="Name of character doing the action")
@@ -43,6 +44,11 @@ class Scene(BaseModel):
         if self.backdrop not in backdrops:
             raise ValueError(
                 f"Invalid backdrop")
+
+        if self.music not in music:
+            raise ValueError(
+                f"Invalid music")
+
         # Also validate characters used in actions
         for action in self.actions:
             if action.character not in characters:
