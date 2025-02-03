@@ -1,14 +1,11 @@
-import pygame
-from gtts import gTTS
-import pyttsx3
+import threading
 
+import pygame
+import pyttsx3
 from engine.font import Fonts
 
 engine = pyttsx3.init()
-
 characters = {}
-
-
 
 class Sprite:
     def __init__(self, spritesheets, scale, window):
@@ -77,7 +74,6 @@ class Sprite:
         font = Fonts.SPEECH_TEXT.value
         padding = (20, 20)
 
-        engine.say(self.speech_text)
 
         # Render text lines
         lines = self.wrap_text(self.speech_text, font, 200)
@@ -122,8 +118,6 @@ class Sprite:
 
     def update(self):
         self.show()
-        if self.isSpeaking:
-            self.update_speech()
 
     def show(self):
         current_time = pygame.time.get_ticks()
@@ -148,10 +142,6 @@ class Sprite:
 
         if self.isSpeaking and self.speech_text:
            self.draw_speech_bubble()
-        else:
-            self.isSpeaking = False
-            if self.speak_complete_callback:
-                self.speak_complete_callback()
 
     def move(self, vx, vy):
         self.rect.x += vx
@@ -166,16 +156,21 @@ class Sprite:
     def speak(self, text, duration, on_complete=None):
         self.isSpeaking = True
         self.speech_text = text
-        self.speech_end_time = pygame.time.get_ticks() + (duration * 1000)
         self.speak_complete_callback = on_complete
+        engine.say(text)
 
-    def update_speech(self):
-        if self.isSpeaking and pygame.time.get_ticks() > self.speech_end_time:
-            self.isSpeaking = False
-            self.speech_text = None
-            if self.speak_complete_callback:
-                self.speak_complete_callback()
-                self.speak_complete_callback = None
+
+        engine.runAndWait()
+
+        def end(_, completed):
+            if completed:
+                self.isSpeaking = False
+                self.speech_text = None
+                if self.speak_complete_callback:
+                    self.speak_complete_callback()
+                    self.speak_complete_callback = None
+
+        engine.connect('finished-utterance', end)
 
     def check_window_col(self):
         x_collision = (

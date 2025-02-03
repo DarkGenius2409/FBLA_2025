@@ -1,5 +1,4 @@
 import uuid
-
 import pygame
 import cv2
 import numpy as np

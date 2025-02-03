@@ -7,6 +7,34 @@ genai.configure(api_key="AIzaSyDkzJl2M3CorRI35eKDcZkIJ3X-1PkGTJc")
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 
+def askQuestion(question):
+    prompt = f"""
+     You are a helpful assistant for an organization called GemPlay. Here are the Frequently Asked Questions (FAQs):
+
+     1. Why am I getting an error when I click a choice?
+        Answer: Close the application and open it up again. These errors are rare and often closing and reopening the application works.
+
+     2. How do I export the story?
+        Answer: Once you are finished with the story or you click the 'exit' button, you will be prompted with an 'Export' button that will allow you to save a video of the story you made!
+
+     3. Are the stories random?
+        Answer: The stories are somewhat random, but not quite! This application utilizes an AI model that will be generating a story according to the choices you select. The choices you select will influence the movements of the character, the story plot, and the backdrops.
+
+     4. I want to know more about how this application was coded. How do I contact?
+        Answer: Email gemplay@gmail.com for any questions, comments, or concerns!
+
+     The user asks: "{question}"
+
+     Based on the above information, please respond to the user's question.
+     Use the least amount of words possible. If nothing works, then just say 'I don't know'
+     Just use alphanumeric characters!
+     """
+
+    response = model.generate_content(prompt)
+
+    return response.text
+
+
 def createTopics():
     prompt = f"""
         You are a helpful assistant. Your task is to generate a list of 3-5 ORIGINAL story topics that strictly adhere to the given constraints.

@@ -1,5 +1,3 @@
-import os
-
 import pygame
 
 from engine.sprite import loadCharacters, characters

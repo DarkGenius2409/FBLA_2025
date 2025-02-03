@@ -30,6 +30,7 @@ class VideoScene(SceneBase):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.video_rect.collidepoint(mouse):
                     self.video.toggle_pause()
+                    pass
                 self.back_btn.on_click(self.SwitchBack, mouse)
 
         self.show_text(Fonts.WELCOME.value, self.name, (self.window.width // 2, (self.window.height // 2) - 220), TEXT_COLOR)
