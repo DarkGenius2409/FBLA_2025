@@ -1,5 +1,6 @@
 import pygame
 
+from cloud import supabase
 from engine.sprite import loadCharacters, characters
 from engine.window import Window
 from scenes.MenuScene import MenuScene
@@ -16,6 +17,7 @@ loadCharacters(window)
 
 
 running = True
+supabase.auth.sign_in_with_password({"email":"aarav.narayan@gmail.com", "password": "BandarGyatt!123"})
 
 # GAME LOOP
 while running:
