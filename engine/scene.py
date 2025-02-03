@@ -13,6 +13,11 @@ class SceneBase:
     def Update(self, events, keys):
         pass
 
+    def show_text(self, font, text, pos, color):
+        text_object = font.render(text, True, color)
+        text_rect = text_object.get_rect(center=pos)
+        self.window.screen.blit(text_object, text_rect)
+
     # Switches to next scene
     def Switch(self, next_scene):
         self.prev = self

@@ -19,6 +19,10 @@ class MenuScene(SceneBase):
         self.btn_width = 200
         self.btn_height = 50
         self.signed_in = False
+        self.fetched_stories = False
+        self.thumbnail_paths = []
+        self.video_paths = []
+        self.names = []
         self.start_btn = MenuButton(self.window, (self.width//2 - self.btn_width/2, self.height//2, self.btn_width, self.btn_height), "New Story" )
         self.sign_in_btn = MenuButton(self.window, (
             self.width // 2 - self.btn_width / 2, self.height // 2 + self.btn_height+20, self.btn_width, self.btn_height), "Sign In")
@@ -49,6 +53,27 @@ class MenuScene(SceneBase):
 
         if supabase.auth.get_user() is not None:
             self.signed_in = True
+            if not self.fetched_stories:
+                user_email = supabase.auth.get_user().user.email
+                data = supabase.table("stories").select("name, video_path, thumbnail_path").eq("user",
+                                                                                               user_email).execute().data
+                for obj in data:
+                    self.names.append(obj["name"])
+                    thumbnail_path = f"./library/{obj['name']}_thumbnail.png"
+                    with open(thumbnail_path, "wb+") as f:
+                        response = supabase.storage.from_("exported_videos").download(
+                            obj["thumbnail_path"]
+                        )
+                        f.write(response)
+                    self.thumbnail_paths.append(thumbnail_path)
+
+                    video_path = f"./library/{obj['name']}_video.mp4"
+                    with open(video_path, "wb+") as f:
+                        response = supabase.storage.from_("exported_videos").download(
+                            obj["video_path"]
+                        )
+                        f.write(response)
+                    self.video_paths.append(video_path)
 
         self.window.screen.fill(BG_COLOR)
         self.window.screen.blit( self.background, (0,0))
@@ -65,7 +90,7 @@ class MenuScene(SceneBase):
                 self.sign_in_btn.on_click(lambda: self.Switch(SignInScene(self.window, self)), mouse) if not self.signed_in else self.sign_out_btn.on_click(sign_out, mouse)
                 self.help_btn.on_click(lambda: self.Switch(HelpScene(self.window, self)), mouse)
                 if self.signed_in:
-                    self.library_btn.on_click(lambda: self.Switch(LibraryScene(self.window, self)), mouse)
+                    self.library_btn.on_click(lambda: self.Switch(LibraryScene(self.window, self, self.thumbnail_paths, self.video_paths, self.names)), mouse)
 
         self.start_btn.show()
         self.sign_in_btn.show() if not self.signed_in else self.sign_out_btn.show()
