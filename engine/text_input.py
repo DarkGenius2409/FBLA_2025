@@ -54,7 +54,3 @@ class TextInput:
         pygame.draw.rect(self.window.screen, color, self.rect)
 
         self.show_text(self.text if self.text != "" else self.placeholder)
-
-        # display.flip() will update only a portion of the
-        # screen to updated, not full area
-        pygame.display.flip()

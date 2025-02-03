@@ -49,6 +49,10 @@ class StoryScene(SceneBase):
             self.setupActiveScene()
             self.window.start_recording()
             self.setBackground()
+
+            pygame.mixer.music.stop()
+            pygame.mixer.music.load(f"assets/music/{self.story["music"]}")
+            pygame.mixer.music.play()
         except Exception as e:
             print(e)
             self.failed = True

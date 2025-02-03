@@ -26,7 +26,7 @@ def askQuestion(question):
      The user asks: "{question}"
 
      Based on the above information, please respond to the user's question.
-     Use the least amount of words possible. If nothing works, then just say 'I don't know'
+     Be concise but descriptive. If nothing works, then prompt the user to give more details
      Just use alphanumeric characters!
      """
 
@@ -81,6 +81,7 @@ def createStory(topic, endStory=False):
             {{
                 "characters": ["A list of characters involved in this scene. Must be a subset of {characters}. All characters directly or indirectly involved in the actions must be included in the scene"],
                 "backdrop": "The backdrop of the scene. You can choose from {backdrops}",
+                "backdrop": "The music of the scene. You can choose from {music}",
                 "actions": [
                     {{
                         "character": "The exact name of one of the characters in the scene",

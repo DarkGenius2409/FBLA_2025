@@ -1,10 +1,8 @@
 import threading
 
 import pygame
-import pyttsx3
 from engine.font import Fonts
 
-engine = pyttsx3.init()
 characters = {}
 
 class Sprite:
@@ -154,13 +152,12 @@ class Sprite:
         self.direction = direction
 
     def speak(self, text, duration, on_complete=None):
+        global speech
+
         self.isSpeaking = True
         self.speech_text = text
         self.speak_complete_callback = on_complete
-        engine.say(text)
-
-
-        engine.runAndWait()
+        speech = text
 
         def end(_, completed):
             if completed:
@@ -169,8 +166,8 @@ class Sprite:
                 if self.speak_complete_callback:
                     self.speak_complete_callback()
                     self.speak_complete_callback = None
+        threading.Timer(duration, end, args=(None, True)).start()
 
-        engine.connect('finished-utterance', end)
 
     def check_window_col(self):
         x_collision = (
@@ -201,8 +198,8 @@ def loadCharacters(window):
 
     characters["soldier"] = Sprite(
         {
-            "idle": {"file":"assets/soldier/idle", "speed":100, "frames":5},
-            "walk": {"file":"assets/soldier/walk", "speed":50, "frames":5},
+            "idle": {"file":"assets/soldier/idle", "speed":50, "frames":5},
+            "walk": {"file":"assets/soldier/walk", "speed":100, "frames":7},
         },
         7,
         window,

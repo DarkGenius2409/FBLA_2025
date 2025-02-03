@@ -58,7 +58,6 @@ class Button:
 
         while text:
             i = 1
-
             # determine maximum width of line
             while self.font.size(text[:i])[0] < rect.width-24 and i < len(text):
                 i += 1
@@ -106,10 +105,4 @@ class Button:
 class MenuButton(Button):
     def __init__(self, window, rect, text):
         super().__init__(window, rect, text)
-
-    def show_text(self, text):
-        text_object = Fonts.MENU_BTN_TEXT.value.render(text, True, BTN_TEXT_COLOR)
-        text_rect = text_object.get_rect(center=self.rect.center)
-        self.window.screen.blit(text_object, text_rect)
-
 

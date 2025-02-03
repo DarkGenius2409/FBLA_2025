@@ -38,7 +38,7 @@ class MenuScene(SceneBase):
 
         self.background = pygame.image.load("assets/menu_background.png").convert_alpha()
         self.background = pygame.transform.scale(self.background, (self.window.width, self.window.height))
-        self.background.set_alpha(55)
+        self.background.set_alpha(35)
 
         self.logo = pygame.image.load("assets/logo.png")
         self.logo = pygame.transform.scale(self.logo, (150, 150))
