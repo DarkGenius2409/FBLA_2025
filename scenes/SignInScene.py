@@ -16,7 +16,7 @@ class SignInScene(SceneBase):
         self.btn_width = 200
         self.btn_height = 50
         self.email = TextInput(self.window, (self.window.width // 2 - 150, self.window.height // 2 - 50, 300, 50), "Username")
-        self.password = TextInput(self.window, (self.window.width//2-150, self.window.height//2 + 20, 300, 50), "Password")
+        self.password = TextInput(self.window, (self.window.width//2-150, self.window.height//2 + 20, 300, 50), "Password", input_type="password")
         self.sign_in_btn = Button(self.window, (
             self.width // 2 - self.btn_width / 2, self.height // 2 + 140, self.btn_width, self.btn_height), "Sign In")
         self.back_btn = Button(self.window, (

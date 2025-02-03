@@ -8,7 +8,7 @@ from engine.text import Text
 
 
 class TextInput:
-    def __init__(self, window, rect, placeholder):
+    def __init__(self, window, rect, placeholder, input_type=None):
         self.window = window
         self.rect = Rect(rect)
         self.text = ""
@@ -16,7 +16,9 @@ class TextInput:
         self.active = False
         self.active_color = TEXT_INPUT_SELECTED_COLOR
         self.passive_color = TEXT_INPUT_COLOR
-        self.font = Fonts.INPUT
+        self.font = Fonts.INPUT.value
+        self.line_height = self.font.size("Tg")[1]
+        self.input_type = input_type
 
     def update(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -39,7 +41,7 @@ class TextInput:
                     self.text += event.unicode
 
     def show_text(self, text):
-        text_object = self.font.value.render(text, True, TEXT_COLOR)
+        text_object = self.font.render(text, True, TEXT_COLOR)
         text_rect = text_object.get_rect(center=self.rect.center)
         self.window.screen.blit(text_object, text_rect)
 
@@ -53,4 +55,13 @@ class TextInput:
                          (self.rect.x, self.rect.y, self.rect.w, self.rect.h + 5))
         pygame.draw.rect(self.window.screen, color, self.rect)
 
-        self.show_text(self.text if self.text != "" else self.placeholder)
+        if self.text == "":
+            self.show_text(self.placeholder)
+        else:
+            if self.input_type == "password":
+                x = self.rect.x + 10
+                for char in self.text:
+                    pygame.draw.circle(self.window.screen, "#000000", (x,self.rect.centery), 5)
+                    x += 15
+            else:
+                self.show_text(self.text)
