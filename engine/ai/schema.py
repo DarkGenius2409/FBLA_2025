@@ -3,7 +3,7 @@ from engine.sprite import characters
 
 actionTypes = ["speak", "leave", "move"]
 backdrops = ["castle", "cave", "desert", "lake", "village", "village2"]
-music = ["chill1", "chill2", "intense"]
+music = ["chill1", "chill2", "battle1", "battle2"]
 
 class Action(BaseModel):
     character: str = Field(description="Name of character doing the action")
@@ -29,9 +29,10 @@ class Action(BaseModel):
 
 
 class Scene(BaseModel):
+    backdrop: str = Field(description="The backdrop")
+    music: str = Field(description="The music choice")
     actions: list[Action] = Field(description="List of actions for the story in order")
     characters: list[str] = Field(description="List of characters in the scene")
-    backdrop: str = Field(description="The backdrop")
 
     @model_validator(mode='after')
     def validate_scene(self):
@@ -41,6 +42,8 @@ class Scene(BaseModel):
                 raise ValueError(
                     f"Invalid character '{character}' in scene characters list. Valid characters are: {characters}")
 
+        print(self.backdrop)
+        print(self.music)
         if self.backdrop not in backdrops:
             raise ValueError(
                 f"Invalid backdrop")

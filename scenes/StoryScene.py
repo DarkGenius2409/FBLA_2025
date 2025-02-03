@@ -30,7 +30,7 @@ class StoryScene(SceneBase):
         self.currentScene = 0
         self.actionIndex = 0
         self.failed = False
-        self.back_btn = MenuButton(self.window, (self.window.width/2-50,self.window.height/2-25+100,100,50), "Go Back" )
+        self.back_btn = MenuButton(self.window, (self.window.width/2-50,self.window.height/2-25+100,100,50), "Back" )
         self.background = None
 
         story_thread = threading.Thread(target=self.getStory)
@@ -49,10 +49,6 @@ class StoryScene(SceneBase):
             self.setupActiveScene()
             self.window.start_recording()
             self.setBackground()
-
-            pygame.mixer.music.stop()
-            pygame.mixer.music.load(f"assets/music/{self.story["music"]}")
-            pygame.mixer.music.play()
         except Exception as e:
             print(e)
             self.failed = True
@@ -82,6 +78,11 @@ class StoryScene(SceneBase):
 
         if scene is None:
             return
+
+
+        pygame.mixer.music.stop()
+        pygame.mixer.music.load(f"assets/music/{scene["music"]}.mp3")
+        pygame.mixer.music.play()
 
         for character in self.characters.values():
             character.visible = False

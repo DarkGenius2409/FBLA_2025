@@ -198,7 +198,7 @@ def loadCharacters(window):
 
     characters["soldier"] = Sprite(
         {
-            "idle": {"file":"assets/soldier/idle", "speed":50, "frames":5},
+            "idle": {"file":"assets/soldier/idle", "speed":150, "frames":5},
             "walk": {"file":"assets/soldier/walk", "speed":100, "frames":7},
         },
         7,

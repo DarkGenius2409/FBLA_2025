@@ -58,9 +58,10 @@ class MenuScene(SceneBase):
     def Update(self, events, keys):
         mouse = pygame.mouse.get_pos()
 
-        if supabase.auth.get_user() is not None:
-            self.signed_in = True
-            if not self.fetched_stories:
+        if not self.fetched_stories :
+            if supabase.auth.get_user() is not None:
+                self.signed_in = True
+
                 user_email = supabase.auth.get_user().user.email
                 data = (supabase.table("stories")
                         .select("name, video_path, thumbnail_path")

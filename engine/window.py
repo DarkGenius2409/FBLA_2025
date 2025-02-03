@@ -71,7 +71,11 @@ class Window:
             frame = np.rot90(frame, k=-1)  # Rotate to match OpenCV format
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
             frame = cv2.flip(frame, 1)# Convert to BGR
-            self.video_writer.write(frame)
+
+            try:
+                self.video_writer.write(frame)
+            except:
+                print("bug")
 
     def export(self, name):
         self.stop_recording()

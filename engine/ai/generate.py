@@ -1,4 +1,4 @@
-from engine.ai.schema import actionTypes, Topics, Story, backdrops
+from engine.ai.schema import actionTypes, Topics, Story, backdrops, music
 from engine.sprite import characters
 import google.generativeai as genai
 import json
@@ -47,6 +47,7 @@ def createTopics():
         - Generate **NEW, UNIQUE** topics that do not copy the examples below.  
         - Do not directly include the topics in the topic list
         - Each topic should be a simple coherent sentence, **do not use semicolons**
+        - Tie each topic directly to a backdrop
         
         Follow this exact format:
         Topics = {{
@@ -68,7 +69,7 @@ def createStory(topic, endStory=False):
 
     if endStory:
         action = f"Your task is to create a JSON object ending this story. {topic}. Think of a fitting scene to end the story at "
-
+    print(endStory)
     prompt = f"""
     You are a helpful assistant. {action}
     Use the following characters: {characters} as actors in the story.
@@ -80,7 +81,7 @@ def createStory(topic, endStory=False):
             {{
                 "characters": ["A list of characters involved in this scene. Must be a subset of {characters}. All characters directly or indirectly involved in the actions must be included in the scene"],
                 "backdrop": "The backdrop of the scene. You can choose from {backdrops}",
-                "music": "The music of the scene. You can choose from {music}",
+                "music": "The music of the scene. You can choose from {music}. Please try to be random with this",
                 "actions": [
                     {{
                         "character": "The exact name of one of the characters in the scene",
@@ -110,11 +111,11 @@ def createStory(topic, endStory=False):
     response = model.generate_content(prompt,
                                       generation_config=genai.GenerationConfig(response_mime_type="application/json"))
     data = json.loads(response.text)
-    print(data)
     try:
         Story.model_validate(data)
         return data
-    except:
+    except Exception as e:
+        print(e)
         raise ValueError()
 
 
