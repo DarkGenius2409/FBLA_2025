@@ -1,4 +1,3 @@
-import gotrue.errors
 import pygame
 
 from cloud import supabase
@@ -30,12 +29,9 @@ class SignInScene(SceneBase):
         self.window.screen.blit(text_object, text_rect)
 
     def sign_in(self):
-        try:
-            supabase.auth.sign_in_with_password(
+        supabase.auth.sign_in_with_password(
             {"email": self.email.text, "password": self.password.text}
         )
-        except gotrue.errors.AuthApiError:
-            pass
 
         self.SwitchBack()
 
