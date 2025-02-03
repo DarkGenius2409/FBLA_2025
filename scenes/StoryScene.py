@@ -11,7 +11,6 @@ from engine.scene import SceneBase
 from engine.sprite import characters
 from scenes.SaveScene import SaveScene
 
-
 class StoryScene(SceneBase):
     totalScenes = 0
     totalSummary = []

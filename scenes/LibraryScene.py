@@ -21,17 +21,17 @@ class LibraryScene(SceneBase):
         self.cards = []
         if len(thumbnails) >= 1:
             card_rect = Rect(0, 0, self.width / 2 - 85, self.height / 4)
-            card_rect.centery = self.height // 2
+            card_rect.centery = self.height // 2 - 40
             card_rect.right = self.width/2 - 10
             self.cards.append(Card(self.window, card_rect, thumbnails[0], videos[0], names[0]))
         if len(thumbnails) >= 2:
             card_rect = Rect(0, 0, self.width / 2 - 85, self.height / 4)
-            card_rect.centery = self.height // 2
+            card_rect.centery = self.height // 2 - 40
             card_rect.left = self.width/2 + 10
             self.cards.append(Card(self.window, card_rect, thumbnails[1], videos[1], names[1]))
         if len(thumbnails) >= 3:
             card_rect = Rect(0, 0, self.width/2 - 85, self.height / 4)
-            card_rect.centery = 3* self.height / 2 + 20
+            card_rect.centery = (3*self.height / 4) - 30
             card_rect.right = self.width/2 - 10
             self.cards.append(Card(self.window, card_rect, thumbnails[2], videos[2], names[2]))
         elif len(thumbnails) >= 4:
@@ -60,7 +60,7 @@ class LibraryScene(SceneBase):
 
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                self.back_btn.on_click(self.SwitchBack, mouse)
+                self.back_btn.on_click(lambda: self.SwitchBack(), mouse)
                 for card in self.cards:
                     card.on_click(lambda: self.Switch(VideoScene(self.window, self, card.video, card.name)), mouse)
 
