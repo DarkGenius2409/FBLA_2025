@@ -86,6 +86,8 @@ class MenuScene(SceneBase):
                             f.write(response)
                     self.video_paths.append(video_path)
 
+                self.fetched_stories = True
+
         self.window.screen.fill(BG_COLOR)
         self.window.screen.blit( self.background, (0,0))
         self.show_text(Fonts.WELCOME.value,"GemPlay", (self.width // 2+50, (self.height // 2) - 100), TITLE_COLOR)
