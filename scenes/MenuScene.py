@@ -6,6 +6,7 @@ from engine.btn.button import Button, MenuButton
 from engine.font import Fonts
 from engine.scene import SceneBase
 from scenes.HelpScene import HelpScene
+from scenes.LibraryScene import LibraryScene
 from scenes.SignInScene import SignInScene
 from scenes.TopicScene import TopicScene
 
@@ -26,6 +27,10 @@ class MenuScene(SceneBase):
             self.btn_height), "Sign Out")
         self.help_btn = MenuButton(self.window, (self.width // 2 - self.btn_width/2, self.height // 2 + 2*(self.btn_height+20), self.btn_width, self.btn_height),
                                 "Help")
+        self.library_btn = MenuButton(self.window, (
+        self.width // 2 - self.btn_width / 2, self.height // 2 + 3 * (self.btn_height + 20), self.btn_width,
+        self.btn_height),
+                                   "Library")
 
         self.background = pygame.image.load("assets/menu_background.png").convert_alpha()
         self.background = pygame.transform.scale(self.background, (self.window.width, self.window.height))
@@ -52,21 +57,18 @@ class MenuScene(SceneBase):
         self.window.screen.blit(self.logo, (self.width//2-250, self.height//2-175))
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                def switch_topic():
-                    self.Switch(TopicScene(self.window))
-                def switch_sign_in():
-                    self.Switch(SignInScene(self.window, self))
-
-                def switch_sign_out():
+                def sign_out():
                     supabase.auth.sign_out()
                     self.Switch(MenuScene(self.window, self))
-                def switch_help():
-                    self.Switch(HelpScene(self.window, self))
 
-                self.start_btn.on_click(switch_topic, mouse)
-                self.sign_in_btn.on_click(switch_sign_in, mouse) if not self.signed_in else self.sign_out_btn.on_click(switch_sign_out, mouse)
-                self.help_btn.on_click(switch_help, mouse)
+                self.start_btn.on_click(lambda: self.Switch(TopicScene(self.window)), mouse)
+                self.sign_in_btn.on_click(lambda: self.Switch(SignInScene(self.window, self)), mouse) if not self.signed_in else self.sign_out_btn.on_click(sign_out, mouse)
+                self.help_btn.on_click(lambda: self.Switch(HelpScene(self.window, self)), mouse)
+                if self.signed_in:
+                    self.library_btn.on_click(lambda: self.Switch(LibraryScene(self.window, self)), mouse)
 
         self.start_btn.show()
         self.sign_in_btn.show() if not self.signed_in else self.sign_out_btn.show()
         self.help_btn.show()
+        if self.signed_in:
+            self.library_btn.show()

@@ -7,6 +7,7 @@ from engine.constants import BG_COLOR, TEXT_COLOR
 from engine.font import Fonts
 from engine.scene import SceneBase
 from engine.text_input import TextInput
+# from scenes.MenuScene import MenuScene
 
 
 class SaveScene(SceneBase):
@@ -16,8 +17,10 @@ class SaveScene(SceneBase):
         self.storyName = TextInput(self.window, (self.window.width//2-150, self.window.height//2-150, 300, 50), "Name Your Story")
 
         rect = (self.window.width/2-150,self.window.height/2-50, 300, 100)
+        homeRect = (self.window.width / 2 - 150, self.window.height / 2 + 75, 300, 100)
 
         self.saveBtn = Button(self.window, rect, "Export story!")
+        self.homeBtn = Button(self.window, homeRect, "Back to Home")
 
     def save(self):
         if self.storyName.text.strip() != "":
@@ -30,9 +33,11 @@ class SaveScene(SceneBase):
         self.storyName.show()
 
         self.saveBtn.show()
+        self.homeBtn.show()
 
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.saveBtn.on_click(self.save, mouse)
+                # self.homeBtn.on_click(lambda: self.Switch(MenuScene(self.window, self)), mouse)
 
             self.storyName.update(event)

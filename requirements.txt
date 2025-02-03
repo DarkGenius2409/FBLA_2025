@@ -61,3 +61,4 @@ gTTS~=2.5.4
 opencv-python~=4.11.0.86
 numpy~=2.2.2
 supabase~=2.12.0
+moviepy~=2.1.2

@@ -1,6 +1,9 @@
+import uuid
+
 import pygame
 import cv2
 import numpy as np
+from moviepy import VideoFileClip
 
 from cloud import supabase
 
@@ -51,7 +54,7 @@ class Window:
                 self.width, self.height = pygame.display.get_window_size()
                 self.screen = pygame.display.set_mode((self.width, self.height), pygame.RESIZABLE)
 
-    def start_recording(self, filename="output.mp4"):
+    def start_recording(self, filename="output/output.mp4"):
         if not self.recording:
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Codec
             self.video_writer = cv2.VideoWriter(filename, fourcc, self.fps, (self.width, self.height))
@@ -73,12 +76,32 @@ class Window:
 
     def export(self, name):
         self.stop_recording()
-        with open('./output.mp4', 'rb') as f:
+        video_storage_path = f"videos/{name}.mp4"
+        thumbnail_storage_path = f"thumbnails/{name}.jpg"
+
+        with VideoFileClip("./output/output.mp4") as clip:
+            clip.save_frame("./output/thumbnail.jpg", t=1.0)
+        with open('./output/output.mp4', 'rb') as f:
             response = supabase.storage.from_("exported_videos").upload(
                 file=f,
-                path=f"videos/{name}.mp4",
+                path=video_storage_path,
                 file_options={"cache-control": "3600", "upsert": "false"},
             )
+        with open('./output/thumbnail.jpg', 'rb') as f:
+            response = supabase.storage.from_("exported_videos").upload(
+                file=f,
+                path=thumbnail_storage_path,
+                file_options={"cache-control": "3600", "upsert": "false"},
+            )
+        user_email = supabase.auth.get_user().user.email
+        story = {
+            "name": name,
+            "user": user_email,
+            "video_path": video_storage_path,
+            "thumbnail_path": thumbnail_storage_path
+        }
+        supabase.table("stories").insert(story).execute()
+
 
     def tick(self):
         self.clock.tick(self.fps)
