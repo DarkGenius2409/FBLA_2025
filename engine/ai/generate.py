@@ -5,7 +5,7 @@ import json
 
 genai.configure(api_key="AIzaSyDkzJl2M3CorRI35eKDcZkIJ3X-1PkGTJc")
 model = genai.GenerativeModel("gemini-1.5-flash")
-
+music = ["chill1", "chill2", "intense"]
 
 def askQuestion(question):
     prompt = f"""
@@ -81,7 +81,7 @@ def createStory(topic, endStory=False):
             {{
                 "characters": ["A list of characters involved in this scene. Must be a subset of {characters}. All characters directly or indirectly involved in the actions must be included in the scene"],
                 "backdrop": "The backdrop of the scene. You can choose from {backdrops}",
-                "backdrop": "The music of the scene. You can choose from {music}",
+                "music": "The music of the scene. You can choose from {music}",
                 "actions": [
                     {{
                         "character": "The exact name of one of the characters in the scene",
