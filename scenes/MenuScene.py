@@ -22,7 +22,6 @@ class MenuScene(SceneBase):
         self.btn_width = 200
         self.btn_height = 50
         self.signed_in = False
-        self.fetched_stories = False
         self.thumbnail_paths = []
         self.video_paths = []
         self.names = []
@@ -58,7 +57,7 @@ class MenuScene(SceneBase):
     def Update(self, events, keys):
         mouse = pygame.mouse.get_pos()
 
-        if not self.fetched_stories :
+        if not self.window.fetched_stories :
             if supabase.auth.get_user() is not None:
                 self.signed_in = True
 
@@ -87,7 +86,7 @@ class MenuScene(SceneBase):
                             f.write(response)
                     self.video_paths.append(video_path)
 
-                self.fetched_stories = True
+                self.window.fetched_stories = True
 
         self.window.screen.fill(BG_COLOR)
         self.window.screen.blit( self.background, (0,0))

@@ -61,7 +61,7 @@ class TextInput:
             if self.input_type == "password":
                 x = self.rect.x + 10
                 for char in self.text:
-                    pygame.draw.circle(self.window.screen, "#000000", (x,self.rect.centery), 5)
+                    pygame.draw.circle(self.window.screen, TEXT_COLOR, (x,self.rect.centery), 5)
                     x += 15
             else:
                 self.show_text(self.text)

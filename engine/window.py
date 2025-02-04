@@ -13,7 +13,7 @@ TITLE = "GenPlay"
 
 
 class Window:
-    def __init__(self, width=WIDTH, height=HEIGHT, title=TITLE, fps=60):
+    def __init__(self, width=WIDTH, height=HEIGHT, title=TITLE, fps=60,):
         pygame.init()  # Ensure pygame is initialized
 
         self.width = width
@@ -22,6 +22,8 @@ class Window:
         self.fullscreen = False
         self.recording = False
         self.fps = fps
+        self.home = None
+        self.fetched_stories = False
 
         self.screen = pygame.display.set_mode((self.width, self.height), pygame.RESIZABLE)
         pygame.display.set_caption(self.title)

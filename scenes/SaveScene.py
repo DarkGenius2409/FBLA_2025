@@ -25,6 +25,7 @@ class SaveScene(SceneBase):
     def save(self):
         if self.storyName.text.strip() != "":
             self.window.export(self.storyName.text)
+            self.window.fetched_stories = False
 
     def Update(self, events, keys):
         mouse = pygame.mouse.get_pos()
@@ -38,6 +39,6 @@ class SaveScene(SceneBase):
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.saveBtn.on_click(self.save, mouse)
-                # self.homeBtn.on_click(lambda: self.Switch(MenuScene(self.window, self)), mouse)
+                self.homeBtn.on_click(lambda: self.Switch(self.window.home), mouse)
 
             self.storyName.update(event)

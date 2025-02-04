@@ -13,11 +13,11 @@ pygame.mixer.init()
 # Game Global Variables
 window = Window()
 active_scene = MenuScene(window, None)
+window.home = active_scene
 loadCharacters(window)
 
 
 running = True
-supabase.auth.sign_in_with_password({"email":"aarav.narayan@gmail.com", "password": "BandarGyatt!123"})
 
 # GAME LOOP
 while running:
