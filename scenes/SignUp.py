@@ -1,8 +1,10 @@
+from typing import get_origin
+
 import gotrue.errors
 import pygame
 
 from cloud import supabase
-from engine.constants import BG_COLOR, TEXT_COLOR
+from engine.constants import BG_COLOR, TEXT_COLOR, DANGER_COLOR
 from engine.btn.button import Button
 from engine.font import Fonts
 from engine.scene import SceneBase
@@ -23,6 +25,7 @@ class SignUpScene(SceneBase):
         self.back_btn = Button(self.window, (
         self.width // 2 - self.btn_width / 2, self.height // 2 + 210, self.btn_width, self.btn_height),
                                "Back")
+        self.error_message = ""
 
     def show_text(self, font, text, pos, color):
         text_object = font.render(text, True, color)
@@ -30,13 +33,13 @@ class SignUpScene(SceneBase):
         self.window.screen.blit(text_object, text_rect)
 
     def sign_in(self):
-        try:
-            supabase.auth.sign_up(
-                {"email": self.email.text, "password": self.password.text}
-            )
-        except gotrue.errors.AuthApiError:
-            pass
-
+        for char in "#$%^&*":
+            if char in self.password.text:
+                self.error_message = "Invalid character in password"
+                return
+        supabase.auth.sign_up(
+            {"email": self.email.text, "password": self.password.text}
+        )
         self.SwitchBack()
 
     def Update(self, events, keys):
@@ -54,6 +57,7 @@ class SignUpScene(SceneBase):
             self.email.update(event)
             self.password.update(event)
 
+        self.show_text(Fonts.SPEECH_TEXT.value, self.error_message, (self.width / 2, self.height - 50), DANGER_COLOR)
         self.email.show()
         self.password.show()
         self.sign_in_btn.show()
