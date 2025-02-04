@@ -44,8 +44,8 @@ class Scene(BaseModel):
 
         if self.backdrop not in backdrops:
             self.backdrop = "castle"
-            raise ValueError(
-                f"Invalid backdrop")
+            # raise ValueError(
+            #     f"Invalid backdrop")
 
         if self.music not in music:
             raise ValueError(
