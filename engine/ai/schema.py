@@ -42,9 +42,8 @@ class Scene(BaseModel):
                 raise ValueError(
                     f"Invalid character '{character}' in scene characters list. Valid characters are: {characters}")
 
-        print(self.backdrop)
-        print(self.music)
         if self.backdrop not in backdrops:
+            self.backdrop = "castle"
             raise ValueError(
                 f"Invalid backdrop")
 
