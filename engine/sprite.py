@@ -166,7 +166,7 @@ class Sprite:
                 if self.speak_complete_callback:
                     self.speak_complete_callback()
                     self.speak_complete_callback = None
-        threading.Timer(duration, end, args=(None, True)).start()
+        threading.Timer(2, end, args=(None, True)).start()
 
 
     def check_window_col(self):

@@ -146,7 +146,8 @@ class StoryScene(SceneBase):
 
 
         if self.end:
-            self.Switch(SaveScene(self.window))
+            pass
+            # self.Switch(SaveScene(self.window))
         else:
             action = self.getCurrentAction()
             inActiveCharacters = list(self.characters.values())
@@ -165,7 +166,7 @@ class StoryScene(SceneBase):
                 dx = target_char.rect.x - character.rect.x
                 if abs(dx) > 300:
                     dx = 1 if dx > 0 else (-1 if dx < 0 else 0)
-                    character.move(dx*5, 0)
+                    character.move(dx*7, 0)
                 else:
                     character.switch_animation("idle")
                     self.nextAction()
@@ -205,7 +206,7 @@ class ChoiceScene(SceneBase):
         rect = pygame.Rect(0, 0, 300, 100)
         rect.center = (self.window.width/2, 0)
         rect.bottom = self.window.height - 20
-        self.exitButton = Button(self.window, rect, "Exit!", variant="destructive")
+        self.exitButton = Button(self.window, rect, "Stop!", variant="destructive")
         self.background = pygame.image.load("assets/menu_background.png").convert_alpha()
         self.background = pygame.transform.scale(self.background, (self.window.width, self.window.height))
         self.background.set_alpha(55)

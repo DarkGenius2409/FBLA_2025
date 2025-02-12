@@ -74,7 +74,7 @@ class HelpScene(SceneBase):
         y = self.height // 2 - 150
         for msg in self.messages:
             rect = self.show_msg(msg["message"], (self.width - 250, y), sent=msg["sent"])
-            y = rect.bottom + 60
+            y = rect.bottom + 120
 
         # Check for any events
         for event in events:
@@ -87,6 +87,7 @@ class HelpScene(SceneBase):
                 def sendMsg():
                     if self.messageInput.text.strip():
                         text = askQuestion(self.messageInput.text)
+                        self.messages = []
                         self.messages.append({"message": f"You: {self.messageInput.text}", "sent": True})
                         self.messages.append({"message": f"AI: {text}", "sent": False})
                         self.messageInput.text = ""

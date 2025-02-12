@@ -11,13 +11,16 @@ from pyvidplayer2 import Video
 
 
 class VideoScene(SceneBase):
-    def __init__(self, window, prev, video, name):
+    def __init__(self, window, prev, video, name, thumbnail):
         super().__init__(window, prev)
         self.video_rect = Rect(0,0, math.floor(WIDTH*0.5), math.floor(HEIGHT*0.5))
         self.video_rect.centerx = self.window.width/2
         self.video_rect.centery = self.window.height/2
         self.video = Video(video)
         self.video.resize((math.floor(WIDTH*0.5), math.floor(HEIGHT*0.5)))
+        self.thumbnail = pygame.image.load(thumbnail).convert_alpha()
+        self.thumbnail = pygame.transform.scale(self.thumbnail, (math.floor(WIDTH*0.5), math.floor(HEIGHT*0.5)))
+
         self.name = name
         self.back_btn = MenuButton(self.window, (
             self.window.width // 2 - 100, (self.window.height // 2) + 220, 200, 50), "Back")
@@ -34,5 +37,6 @@ class VideoScene(SceneBase):
                 self.back_btn.on_click(self.SwitchBack, mouse)
 
         self.show_text(Fonts.WELCOME.value, self.name, (self.window.width // 2, (self.window.height // 2) - 220), TEXT_COLOR)
+        self.window.screen.blit(self.thumbnail, (self.video_rect.x, self.video_rect.y))
         self.video.draw(self.window.screen, (self.video_rect.x, self.video_rect.y))
         self.back_btn.show()

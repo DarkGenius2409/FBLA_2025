@@ -3,7 +3,7 @@ from engine.sprite import characters
 import google.generativeai as genai
 import json
 
-genai.configure(api_key="AIzaSyDkzJl2M3CorRI35eKDcZkIJ3X-1PkGTJc")
+genai.configure(api_key="AIzaSyDKl2c66VoWCecdgsjbNb8tNuRKlJ54HKI")
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 def askQuestion(question):
@@ -48,6 +48,7 @@ def createTopics():
         - Do not directly include the topics in the topic list
         - Each topic should be a simple coherent sentence, **do not use semicolons**
         - Tie each topic directly to a backdrop
+        - TOPICS MAY NOT FEATURE ANYTHING OTHER THAN {characters}
         
         Follow this exact format:
         Topics = {{
@@ -86,7 +87,7 @@ def createStory(topic, endStory=False):
                     {{
                         "character": "The exact name of one of the characters in the scene",
                         "actionType": "One of these: speak, leave, move. The speak action means the character will say something, move means they will move to another character, and leave means they will leave the scene",
-                        "target": "For 'speak', include the dialogue spoken by the character. For 'move', include the name of another character the actor is moving towards (must be one of {characters}). For 'leave', leave this field empty. THIS MUST BE A STRING."
+                        "target": "For 'speak', include the dialogue spoken by the character. For 'move', include the name of another character the actor is moving towards (must be one of {characters}). Again, if its it MOVE, target must be: {characters}. For 'leave', leave this field empty. THIS MUST BE A STRING."
                     }}
                 ]
             }}

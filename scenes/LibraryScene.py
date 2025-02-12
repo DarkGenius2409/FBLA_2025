@@ -62,7 +62,7 @@ class LibraryScene(SceneBase):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.back_btn.on_click(lambda: self.SwitchBack(), mouse)
                 for card in self.cards:
-                    card.on_click(lambda: self.Switch(VideoScene(self.window, self, card.video, card.name)), mouse)
+                    card.on_click(lambda: self.Switch(VideoScene(self.window, self, card.video, card.name, card.img_path)), mouse)
 
         for card in self.cards:
             card.show()

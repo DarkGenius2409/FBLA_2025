@@ -20,7 +20,9 @@ class Action(BaseModel):
         if self.actionType == "move" and  self.target == "":
             raise ValueError("'target' must specify the target character for 'move' action")
         if self.actionType == "move" and self.target not in characters.keys():
-            raise ValueError("'target' must be a valid character for 'move' action")
+            self.actionType = "leave"
+            self.target = ""
+            # raise ValueError("'target' must be a valid character for 'move' action")
         if self.actionType == "leave" and self.target:
             raise ValueError("'target' must be empty for 'leave' action")
 

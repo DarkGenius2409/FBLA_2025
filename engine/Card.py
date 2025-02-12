@@ -12,6 +12,7 @@ class Card:
         self.window = window
         self.name = name
         self.rect = pygame.Rect(rect)
+        self.img_path = img
         self.img = pygame.image.load(img).convert_alpha()
         self.img = pygame.transform.scale(self.img, (WIDTH*0.18, HEIGHT*0.18))
         self.video = video

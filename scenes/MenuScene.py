@@ -105,8 +105,6 @@ class MenuScene(SceneBase):
 
                 self.library_btn.on_click(lambda: self.Switch(LibraryScene(self.window, self, self.thumbnail_paths, self.video_paths, self.names)), mouse) if self.signed_in else self.sign_up_btn.on_click(lambda: self.Switch(SignUpScene(self.window, self)), mouse)
 
-
-
         self.start_btn.show()
         self.sign_in_btn.show() if not self.signed_in else self.sign_out_btn.show()
         self.help_btn.show()
